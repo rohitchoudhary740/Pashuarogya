@@ -282,3 +282,4 @@ None of the deployment changes affect it.
 |---|---|
 | `/healthz` | platform health check, keep-alive, seeding progress |
 | `/api/db/health` | row counts and recent writes — proof the database is persisting |
+

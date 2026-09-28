@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import (Column, Integer, String, Float, Boolean, DateTime,
                         Date, Text, ForeignKey, UniqueConstraint)
 from sqlalchemy.orm import relationship
-from database import Base
+from .database import Base
 
 # ------------------------------------------------------------------ locations
 class Location(Base):

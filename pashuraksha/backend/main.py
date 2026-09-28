@@ -15,14 +15,14 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from .database import Base, engine, get_db, SessionLocal
-from models import (Location, User, Farmer, Animal, Case, Vaccination, HealthCentre,
+from .models import (Location, User, Farmer, Animal, Case, Vaccination, HealthCentre,
                     Treatment, Sample, RiskScore, Outbreak, Alert, AuditLog,
                     WeatherObservation, Claim, Task, Camp)
-import engine as intel
-import seed as seeder
-import weather as wx
-import keepalive
-import forecast as fc
+from . import engine as intel
+from . import seed as seeder
+from . import weather as wx
+from . import keepalive
+from . import forecast as fc
 
 AI_URL = os.environ.get("PASHU_AI_URL", "http://127.0.0.1:8001")
 

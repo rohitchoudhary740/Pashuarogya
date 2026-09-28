@@ -20,8 +20,8 @@ import json
 import math
 from datetime import datetime, timedelta
 
-from models import Location, Animal, Vaccination, Outbreak
-from engine import haversine_km, _village_case_counts, WINDOW_DAYS
+from .models import Location, Animal, Vaccination, Outbreak
+from .engine import haversine_km, _village_case_counts, WINDOW_DAYS
 
 BETA = 0.42          # transmission intensity per day (LSD-like, vector season)
 GAMMA = 0.14         # removal rate (recovery/death) per day

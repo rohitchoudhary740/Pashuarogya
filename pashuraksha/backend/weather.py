@@ -5,7 +5,7 @@ import time
 import urllib.request, urllib.parse, json
 from datetime import datetime
 
-from models import Location, WeatherObservation
+from .models import Location, WeatherObservation
 
 _cache: dict[int, tuple[float, dict]] = {}
 TTL = 1800  # 30 min

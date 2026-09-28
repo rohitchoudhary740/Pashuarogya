@@ -17,7 +17,7 @@ from datetime import datetime, date, timedelta
 import yaml
 from sqlalchemy import func
 
-from models import (Case, Animal, Location, Vaccination, RiskScore, Outbreak,
+from .models import (Case, Animal, Location, Vaccination, RiskScore, Outbreak,
                     Alert, WeatherObservation, Task)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

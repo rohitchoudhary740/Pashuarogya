@@ -18,9 +18,9 @@ import os
 import random
 from datetime import datetime, date, timedelta
 
-from models import (Location, User, Farmer, Animal, Case, Vaccination,
+from .models import (Location, User, Farmer, Animal, Case, Vaccination,
                     Treatment, Sample, Alert, Claim, Camp, HealthCentre)
-from engine import triage, haversine_km
+from .engine import triage, haversine_km
 
 rng = random.Random(2026)
 

@@ -87,10 +87,13 @@ def startup():
         finally:
             BOOT["ready"] = True
 
-    import threading
-    threading.Thread(target=_boot, daemon=True).start()
-    # keep the free-tier instance from idling out between demos
-    keepalive.start()
+    if os.environ.get("VERCEL"):
+        _boot()
+    else:
+        import threading
+        threading.Thread(target=_boot, daemon=True).start()
+        # keep the free-tier instance from idling out between demos
+        keepalive.start()
 
 
 # --------------------------------------------------------------------- auth --

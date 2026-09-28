@@ -1,0 +1,50 @@
+# Keeps the free Render deployment awake, and wakes it if it has gone down.
+#
+# The app also pings itself (backend/keepalive.py), which stops it idling out.
+# But once the instance IS asleep — after a deploy, a crash, or an OOM kill —
+# that thread is asleep with it and cannot wake anything. Only a request from
+# outside can, which is what this workflow is for.
+#
+# The URL comes from the repository variable PASHU_URL when set
+# (Settings → Secrets and variables → Actions → Variables), otherwise the
+# default below.
+#
+# Note: GitHub disables scheduled workflows in a repo with no activity for 60
+# days, and cron runs can drift by several minutes under load. Neither matters
+# here — a late ping still lands well inside the idle window.
+
+name: Keep Render awake
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"     # every 10 minutes (Render idles at ~15)
+  workflow_dispatch:            # and a manual "wake it now" button
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping /healthz until it answers
+        run: |
+          URL="${{ vars.PASHU_URL || 'https://pashuaarogya.onrender.com' }}"
+          echo "Pinging $URL/healthz"
+          # A sleeping instance takes ~50s to cold-start, so a single short
+          # request would time out and report a false failure. Retry with a
+          # generous window instead, and only fail if it never comes back.
+          for attempt in 1 2 3 4 5 6; do
+            code=$(curl -s -o /tmp/body -w "%{http_code}" --max-time 90 "$URL/healthz" || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "awake (HTTP 200) on attempt $attempt"
+              head -c 400 /tmp/body; echo
+              exit 0
+            fi
+            echo "attempt $attempt: HTTP $code — waiting for cold start"
+            sleep 20
+          done
+          echo "::error::$URL/healthz did not respond after 6 attempts"
+          exit 1

@@ -1,0 +1,342 @@
+# ============================================================================
+# PashuRaksha AI — Disease Knowledge Base (FR-07)
+# ----------------------------------------------------------------------------
+# HOT-RELOADED: edit this file and press "Reload KB" on the dashboard (or call
+# POST /api/kb/reload). No restart, no code change. Adding a new disease is a
+# ~20-line paste. Weights are demo defaults — validate with veterinary experts
+# before operational use (PRD section 8.1).
+#
+# symptom vocabulary (controlled — the triage engine only understands these):
+#   fever, nodules, lameness, oral_lesions, hoof_lesions, salivation,
+#   nasal_discharge, ocular_discharge, cough, diarrhoea, bloat, swelling,
+#   sudden_death, abortion, low_milk, anorexia, itching
+# ============================================================================
+
+symptoms:
+  fever:            {en: "Fever",              mr: "ताप",              hi: "बुखार",            icon: "🌡️"}
+  nodules:          {en: "Skin nodules",       mr: "त्वचेवर गाठी",     hi: "त्वचा पर गांठें",   icon: "🔴"}
+  lameness:         {en: "Lameness",           mr: "लंगडेपणा",         hi: "लंगड़ापन",          icon: "🦵"}
+  oral_lesions:     {en: "Mouth sores",        mr: "तोंडात फोड",       hi: "मुंह में छाले",     icon: "👄"}
+  hoof_lesions:     {en: "Hoof sores",         mr: "खुरात जखमा",       hi: "खुर में घाव",       icon: "🐾"}
+  salivation:       {en: "Heavy drooling",     mr: "जास्त लाळ",        hi: "अधिक लार",          icon: "💧"}
+  nasal_discharge:  {en: "Runny nose",         mr: "नाक वाहणे",        hi: "नाक बहना",          icon: "👃"}
+  ocular_discharge: {en: "Watery eyes",        mr: "डोळ्यातून पाणी",   hi: "आंखों से पानी",     icon: "👁️"}
+  cough:            {en: "Cough",              mr: "खोकला",            hi: "खांसी",             icon: "😮‍💨"}
+  diarrhoea:        {en: "Diarrhoea",          mr: "जुलाब",            hi: "दस्त",              icon: "💩"}
+  bloat:            {en: "Bloated belly",      mr: "पोट फुगणे",        hi: "पेट फूलना",         icon: "🎈"}
+  swelling:         {en: "Swelling (neck/leg)",mr: "सूज (मान/पाय)",    hi: "सूजन",              icon: "🫧"}
+  sudden_death:     {en: "Sudden death",       mr: "अचानक मृत्यू",     hi: "अचानक मृत्यु",      icon: "⚠️"}
+  abortion:         {en: "Abortion",           mr: "गर्भपात",          hi: "गर्भपात",           icon: "🚫"}
+  low_milk:         {en: "Milk drop",          mr: "दूध कमी",          hi: "दूध कम",            icon: "🥛"}
+  anorexia:         {en: "Not eating",         mr: "चारा खात नाही",    hi: "चारा नहीं खाना",    icon: "🚫🌾"}
+  itching:          {en: "Itching / hair loss",mr: "खाज / केस गळणे",   hi: "खुजली",             icon: "🪮"}
+  red_urine:        {en: "Red / dark urine",   mr: "लाल लघवी",         hi: "लाल पेशाब",         icon: "🩸"}
+  udder_swelling:   {en: "Udder swelling",     mr: "कासेला सूज",       hi: "थन में सूजन",       icon: "🐮"}
+  aggression:       {en: "Aggression / biting",mr: "आक्रमकता / चावणे", hi: "आक्रामकता",         icon: "😠"}
+  twisted_neck:     {en: "Twisted neck (birds)",mr: "मान वाकडी (पक्षी)",hi: "गर्दन मुड़ना",      icon: "🐔"}
+  egg_drop:         {en: "Egg production drop",mr: "अंडी कमी",         hi: "अंडे कम",           icon: "🥚"}
+  ticks:            {en: "Heavy tick load",    mr: "गोचीड जास्त",      hi: "किलनी अधिक",        icon: "🕷️"}
+
+diseases:
+  lsd:
+    category: cattle_buffalo
+    name: {en: "Lumpy Skin Disease", mr: "लम्पी त्वचा रोग", hi: "लम्पी त्वचा रोग"}
+    species: [cattle, buffalo]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [6, 7, 8, 9, 10]        # monsoon & post-monsoon (vector-borne)
+    vector_borne: true
+    signs: {nodules: 5, fever: 3, low_milk: 2, ocular_discharge: 1, nasal_discharge: 1, anorexia: 1}
+    min_score: 6
+    action: {en: "Isolate the animal. Do NOT move animals out of the village. Vet visit within 24h. Ring vaccination of surrounding villages.",
+             mr: "जनावर वेगळे बांधा. गावाबाहेर जनावरे नेऊ नका. २४ तासांत पशुवैद्य भेट. आसपासच्या गावांत लसीकरण.",
+             hi: "पशु को अलग बांधें। गांव से बाहर न ले जाएं। 24 घंटे में पशु चिकित्सक। आसपास टीकाकरण।"}
+    home_care: {hi: "बीमार पशु को अलग बांधें, छाया और साफ़ पानी दें। गांठों/घावों को नीम या हल्दी के पानी से धोएं, मक्खियाँ भगाने के लिए नीम का धुआँ करें। नरम हरा चारा और गुड़-नमक का पानी दें। दूध उबालकर ही उपयोग करें।",
+                mr: "आजारी जनावर वेगळे बांधा, सावली व स्वच्छ पाणी द्या. गाठी/जखमा कडुनिंब किंवा हळदीच्या पाण्याने धुवा, माश्यांसाठी कडुनिंबाचा धूर करा. मऊ हिरवा चारा व गूळ-मीठ पाणी द्या. दूध उकळूनच वापरा.",
+                en: "Isolate the animal in shade with clean water. Wash nodules/wounds with neem or turmeric water; use neem smoke against flies. Give soft green fodder and jaggery-salt water. Boil milk before use."}
+  fmd:
+    category: cattle_buffalo
+    name: {en: "Foot & Mouth Disease", mr: "तोंडखुरी रोग", hi: "खुरपका-मुंहपका"}
+    species: [cattle, buffalo, goat, sheep]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [11, 12, 1, 2]
+    vector_borne: false
+    signs: {oral_lesions: 5, hoof_lesions: 5, salivation: 4, fever: 2, lameness: 3, low_milk: 1}
+    min_score: 7
+    action: {en: "Strict movement stop. Footbath with washing soda at shed entry. Vet visit urgently. Check vaccination status of whole village.",
+             mr: "जनावरांची ने-आण पूर्ण थांबवा. गोठ्याच्या दारात धुण्याचा सोडा टाकून पायधुणी. तातडीने पशुवैद्य. संपूर्ण गावाची लस स्थिती तपासा.",
+             hi: "आवाजाही तुरंत रोकें। शेड के दरवाजे पर फुटबाथ। तुरंत पशु चिकित्सक बुलाएं।"}
+    home_care: {hi: "पशु को अलग रखें, मुंह के छाले फिटकरी या नमक के हल्के पानी से दिन में 2-3 बार धोएं, खुरों को नीम/हल्दी पानी से साफ़ करके सूखा रखें। नरम दलिया, केला, गुड़ का घोल दें। गोठ के दरवाज़े पर धोने का सोडा डालकर पैरधोवन बनाएं।",
+                mr: "जनावर वेगळे ठेवा, तोंडातील फोड तुरटी/मिठाच्या सौम्य पाण्याने दिवसातून २-३ वेळा धुवा, खूर कडुनिंब/हळद पाण्याने स्वच्छ करून कोरडे ठेवा. मऊ पेज, केळी, गुळाचे पाणी द्या. गोठ्याच्या दारात धुण्याचा सोडा टाकून पायधुणी करा.",
+                en: "Isolate; rinse mouth sores with dilute alum/salt water 2–3 times a day; clean hooves with neem/turmeric water and keep dry. Feed soft porridge, banana, jaggery water. Washing-soda footbath at the shed door."}
+  hs:
+    category: cattle_buffalo
+    name: {en: "Haemorrhagic Septicaemia", mr: "घटसर्प", hi: "गलघोंटू"}
+    species: [cattle, buffalo]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [6, 7, 8, 9]
+    vector_borne: false
+    signs: {fever: 4, swelling: 5, sudden_death: 5, salivation: 2, nasal_discharge: 2}
+    min_score: 7
+    action: {en: "EMERGENCY — animals can die within hours. Call vet immediately. Do not delay. Vaccinate in-contact animals.",
+             mr: "आपत्कालीन — काही तासांत मृत्यू होऊ शकतो. ताबडतोब पशुवैद्यांना बोलवा. संपर्कातील जनावरांना लस द्या.",
+             hi: "आपातकाल — कुछ घंटों में मृत्यु संभव। तुरंत डॉक्टर बुलाएं।"}
+    home_care: {hi: "यह आपातकाल है — घर पर इलाज नहीं, तुरंत 1962/पशु चिकित्सक। इंतज़ार के दौरान पशु को छाया में रखें, गर्दन की सूजन पर ठंडे पानी की पट्टी रखें, पानी पिलाते रहें, दूसरे पशुओं से अलग करें।",
+                mr: "ही आणीबाणी आहे — घरी उपचार नाही, ताबडतोब १९६२/पशुवैद्य. वाट पाहताना जनावर सावलीत ठेवा, मानेच्या सुजेवर थंड पाण्याची पट्टी ठेवा, पाणी पाजत रहा, इतरांपासून वेगळे करा.",
+                en: "Emergency — no home treatment; call 1962/vet immediately. Meanwhile keep the animal in shade, cold-water compress on the neck swelling, keep offering water, isolate from others."}
+  bq:
+    category: cattle_buffalo
+    name: {en: "Black Quarter", mr: "फऱ्या", hi: "लंगड़ी बुखार"}
+    species: [cattle, buffalo]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [6, 7, 8, 9]
+    vector_borne: false
+    signs: {lameness: 4, swelling: 5, fever: 3, sudden_death: 4}
+    min_score: 7
+    action: {en: "Urgent vet attention. Affected muscle swelling is an emergency. Vaccinate young stock in village.",
+             mr: "तातडीने पशुवैद्य. स्नायूची सूज ही आणीबाणी आहे. गावातील तरुण जनावरांना लस द्या.",
+             hi: "तुरंत पशु चिकित्सक। गांव के युवा पशुओं का टीकाकरण करें।"}
+    home_care: {hi: "तुरंत पशु चिकित्सक बुलाएं। तब तक पशु को आराम दें, सूजे हुए पैर पर ठंडे पानी की पट्टी रखें, चलने-फिरने से रोकें, साफ़ पानी और नरम चारा दें। गांव के बाकी युवा पशुओं का टीका करवाएं।",
+                mr: "ताबडतोब पशुवैद्य बोलवा. तोपर्यंत जनावराला विश्रांती द्या, सुजलेल्या पायावर थंड पाण्याची पट्टी ठेवा, चालवू नका, स्वच्छ पाणी व मऊ चारा द्या. गावातील इतर तरुण जनावरांना लस द्या.",
+                en: "Call the vet urgently. Rest the animal, cold compress on the swollen leg, stop it moving, give clean water and soft feed. Vaccinate the village's other young stock."}
+  ppr:
+    category: sheep_goat
+    name: {en: "PPR (Goat Plague)", mr: "पीपीआर (शेळी प्लेग)", hi: "पीपीआर (बकरी प्लेग)"}
+    species: [goat, sheep]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [3, 4, 5, 6]
+    vector_borne: false
+    signs: {fever: 3, diarrhoea: 4, oral_lesions: 3, nasal_discharge: 3, ocular_discharge: 2, cough: 2}
+    min_score: 7
+    action: {en: "Separate sick goats/sheep. No new animals in/out. Vet visit within 24h. PPR vaccine protects for life.",
+             mr: "आजारी शेळ्या-मेंढ्या वेगळ्या करा. नवीन जनावरे आणू-नेऊ नका. २४ तासांत पशुवैद्य. पीपीआर लस आयुष्यभर संरक्षण देते.",
+             hi: "बीमार बकरियों को अलग करें। 24 घंटे में पशु चिकित्सक।"}
+    home_care: {hi: "बीमार बकरी-भेड़ को अलग रखें। दस्त के लिए ORS या गुड़-नमक-पानी थोड़ा-थोड़ा बार-बार पिलाएं। नाक-आंख साफ़ कपड़े से पोंछें, मुंह के छाले नमक पानी से धोएं। नरम पत्तियाँ/दलिया दें, बाड़ा सूखा और गर्म रखें।",
+                mr: "आजारी शेळ्या-मेंढ्या वेगळ्या ठेवा. जुलाबासाठी ORS किंवा गूळ-मीठ-पाणी थोडे थोडे वारंवार पाजा. नाक-डोळे स्वच्छ कापडाने पुसा, तोंडातील फोड मिठाच्या पाण्याने धुवा. मऊ पाला/पेज द्या, वाडा कोरडा व उबदार ठेवा.",
+                en: "Isolate sick goats/sheep. For diarrhoea give ORS or jaggery-salt water little and often. Wipe nose/eyes with a clean cloth, rinse mouth sores with salt water. Soft leaves/porridge; keep the pen dry and warm."}
+  anthrax:
+    category: zoonotic
+    name: {en: "Anthrax", mr: "फाशी रोग", hi: "एंथ्रेक्स"}
+    species: [cattle, buffalo, goat, sheep]
+    notifiable: true
+    zoonotic: true
+    severity: critical
+    season_months: [4, 5, 6]
+    vector_borne: false
+    signs: {sudden_death: 6, fever: 2, bloat: 3, swelling: 2}
+    min_score: 6
+    action: {en: "DO NOT open or move the carcass. Do not touch blood. Inform vet & health dept IMMEDIATELY — this disease can spread to humans. Bury deep with lime under supervision.",
+             mr: "मृत जनावर कापू/हलवू नका. रक्ताला स्पर्श करू नका. ताबडतोब पशुवैद्य व आरोग्य विभागाला कळवा — हा रोग माणसांनाही होतो. देखरेखीखाली चुन्यासह खोल पुरा.",
+             hi: "शव को न खोलें न हिलाएं। खून को न छुएं। तुरंत सूचित करें — यह मनुष्यों में फैल सकता है।"}
+    home_care: {hi: "घर पर कोई इलाज नहीं — शव को न काटें, न छुएं, न खाएं। रक्त/स्राव पर चूना डालें, जगह को घेर दें, बच्चों-कुत्तों को दूर रखें। तुरंत 1962 और स्वास्थ्य विभाग को सूचित करें। हाथ साबुन से धोएं।",
+                mr: "घरी उपचार नाही — मृत जनावर कापू, स्पर्श करू, खाऊ नका. रक्त/स्रावावर चुना टाका, जागा घेरा, मुले-कुत्रे दूर ठेवा. ताबडतोब १९६२ व आरोग्य विभागाला कळवा. हात साबणाने धुवा.",
+                en: "No home treatment — do not cut, touch or eat the carcass. Put lime on blood/discharge, cordon the spot, keep children and dogs away. Inform 1962 and the health department at once. Wash hands with soap."}
+  brucellosis:
+    category: zoonotic
+    name: {en: "Brucellosis", mr: "ब्रुसेलोसिस", hi: "ब्रुसेलोसिस"}
+    species: [cattle, buffalo, goat]
+    notifiable: true
+    zoonotic: true
+    severity: medium
+    season_months: []
+    vector_borne: false
+    signs: {abortion: 6, low_milk: 2, swelling: 1}
+    min_score: 6
+    action: {en: "Handle aborted material ONLY with gloves — spreads to humans through contact & raw milk. Boil all milk. Vet sampling needed for confirmation.",
+             mr: "गर्भपाताचे साहित्य हातमोजे घालूनच हाताळा — स्पर्श व कच्च्या दुधातून माणसांना होतो. दूध उकळूनच वापरा. खात्रीसाठी नमुना तपासणी आवश्यक.",
+             hi: "गर्भपात सामग्री दस्ताने पहनकर ही छुएं। दूध उबालकर पिएं।"}
+    home_care: {hi: "गर्भपात की सामग्री दस्ताने/प्लास्टिक से उठाकर चूने के साथ गहरा गाड़ें, जगह धोकर चूना छिड़कें। पशु को अलग रखें, दूध उबालकर ही पिएं, हाथ साबुन से धोएं। गर्भवती महिलाएं पशु से दूर रहें। जांच के लिए वेट को नमूना दें।",
+                mr: "गर्भपाताचे साहित्य हातमोजे/प्लास्टिकने उचलून चुन्यासह खोल पुरा, जागा धुवून चुना टाका. जनावर वेगळे ठेवा, दूध उकळूनच प्या, हात साबणाने धुवा. गर्भवती महिलांनी जनावरापासून दूर राहावे. तपासणीसाठी नमुना द्या.",
+                en: "Handle aborted material with gloves/plastic and bury deep with lime; wash the spot and sprinkle lime. Isolate the animal, boil milk, wash hands with soap. Pregnant women should stay away. Give the vet a sample for testing."}
+  mange:
+    category: general
+    name: {en: "Mange / Skin infestation", mr: "खरूज", hi: "खुजली रोग"}
+    species: [cattle, buffalo, goat, sheep]
+    notifiable: false
+    zoonotic: false
+    severity: low
+    season_months: []
+    vector_borne: false
+    signs: {itching: 5, anorexia: 1}
+    min_score: 4
+    action: {en: "Not an emergency. Wash with vet-recommended solution; vet visit on next scheduled round.",
+             mr: "आणीबाणी नाही. पशुवैद्यांच्या सल्ल्याने औषधी द्रावणाने धुवा; पुढील फेरीत तपासणी.",
+             hi: "आपातकाल नहीं। अगले दौरे पर जांच कराएं।"}
+    home_care: {hi: "पशु को नीम की पत्तियों के उबले पानी या नीम तेल से नहलाएं, प्रभावित जगह पर नीम/करंज तेल लगाएं। गोठ की सफाई करें, बिछावन बदलें, दूसरे पशुओं से अलग रखें। अगली फेरी में पशु चिकित्सक से दवा लें।",
+                mr: "जनावराला कडुनिंबाच्या पानांच्या उकळलेल्या पाण्याने किंवा कडुनिंब तेलाने धुवा, बाधित जागी कडुनिंब/करंज तेल लावा. गोठा स्वच्छ करा, बिछाना बदला, इतरांपासून वेगळे ठेवा. पुढील फेरीत पशुवैद्यांकडून औषध घ्या.",
+                en: "Wash with boiled neem-leaf water or neem oil; apply neem/karanj oil on affected skin. Clean the shed, change bedding, keep apart from others. Get medicine from the vet on the next round."}
+  rabies:
+    category: zoonotic
+    name: {en: "Rabies", mr: "रेबीज (पिसाळणे)", hi: "रेबीज"}
+    species: [cattle, buffalo, goat, sheep]
+    notifiable: true
+    zoonotic: true
+    severity: critical
+    season_months: []
+    vector_borne: false
+    signs: {aggression: 6, salivation: 3, anorexia: 1}
+    min_score: 6
+    action: {en: "DO NOT touch the animal. Keep people and children away. Call the vet and 1962 immediately - fatal to humans through bites/saliva.",
+             mr: "जनावराला स्पर्श करू नका. माणसे व मुलांना दूर ठेवा. ताबडतोब पशुवैद्य व १९६२ ला कळवा - चाव्याने/लाळेने माणसांना प्राणघातक.",
+             hi: "पशु को न छुएं। लोगों को दूर रखें। तुरंत 1962 पर कॉल करें - मनुष्यों के लिए घातक।"}
+    home_care: {hi: "घर पर कोई इलाज नहीं। पशु को न छुएं, मज़बूती से अलग बांधें, बच्चों और अन्य पशुओं को दूर रखें। यदि किसी को काटा/लार लगी हो तो घाव साबुन-पानी से 15 मिनट धोकर तुरंत अस्पताल जाएं। 1962 पर सूचना दें।",
+                mr: "घरी उपचार नाही. जनावराला स्पर्श करू नका, मजबूत बांधून वेगळे ठेवा, मुले व इतर जनावरे दूर ठेवा. कोणाला चावले/लाळ लागली असल्यास जखम साबण-पाण्याने १५ मिनिटे धुवून ताबडतोब दवाखान्यात जा. १९६२ ला कळवा.",
+                en: "No home treatment. Do not touch; tie securely apart, keep children and animals away. If anyone is bitten or gets saliva on a wound, wash with soap and water for 15 minutes and go to hospital immediately. Report on 1962."}
+  sgpox:
+    category: sheep_goat
+    name: {en: "Sheep & Goat Pox", mr: "देवी रोग (शेळ्या-मेंढ्या)", hi: "भेड़-बकरी चेचक"}
+    species: [goat, sheep]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [12, 1, 2, 3]
+    vector_borne: false
+    signs: {nodules: 5, fever: 3, nasal_discharge: 2, ocular_discharge: 1}
+    min_score: 6
+    action: {en: "Isolate the flock. No animal movement. Vet visit in 24h - vaccine available under the state programme.",
+             mr: "कळप वेगळा ठेवा. जनावरांची ने-आण नको. २४ तासांत पशुवैद्य - शासकीय लस उपलब्ध.",
+             hi: "झुंड को अलग रखें। 24 घंटे में पशु चिकित्सक।"}
+    home_care: {hi: "बीमार पशुओं को अलग रखें, घावों को नीम/हल्दी पानी से धोकर सूखा रखें, नीम तेल लगाएं। मक्खियाँ भगाएं, बाड़ा साफ़ और धूप वाला रखें, नरम चारा-पानी दें। बाकी झुंड का टीका करवाएं।",
+                mr: "आजारी जनावरे वेगळी ठेवा, जखमा कडुनिंब/हळद पाण्याने धुवून कोरड्या ठेवा, कडुनिंब तेल लावा. माश्या दूर ठेवा, वाडा स्वच्छ व उन्हात ठेवा, मऊ चारा-पाणी द्या. उरलेल्या कळपाला लस द्या.",
+                en: "Isolate; wash pox sores with neem/turmeric water and keep dry, apply neem oil. Control flies, keep the pen clean and sunny, give soft feed and water. Vaccinate the rest of the flock."}
+  et:
+    category: sheep_goat
+    name: {en: "Enterotoxaemia", mr: "आंत्रविषार", hi: "आंत्र विषाक्तता"}
+    species: [goat, sheep]
+    notifiable: false
+    zoonotic: false
+    severity: high
+    season_months: [6, 7, 8]
+    vector_borne: false
+    signs: {sudden_death: 5, bloat: 3, diarrhoea: 2}
+    min_score: 6
+    action: {en: "Often follows a sudden green-fodder change. Vaccinate the rest of the flock; restrict lush grazing. Vet visit urgently.",
+             mr: "हिरवा चारा अचानक वाढल्यावर होतो. उर्वरित कळपाला लस द्या; हिरवळ चराई मर्यादित करा. तातडीने पशुवैद्य.",
+             hi: "हरे चारे में अचानक बदलाव से होता है। बाकी झुंड का टीकाकरण करें।"}
+    home_care: {hi: "हरा चारा तुरंत बंद करें, सूखा चारा और पानी दें। बीमार पशु को अलग रखें, पेट फूला हो तो धीरे टहलाएं। यह तेज़ी से जानलेवा है — तुरंत पशु चिकित्सक। बाकी झुंड का टीका करवाएं और चराई धीरे-धीरे बढ़ाएं।",
+                mr: "हिरवा चारा लगेच बंद करा, कोरडा चारा व पाणी द्या. आजारी जनावर वेगळे ठेवा, पोट फुगले असल्यास हळू चालवा. हा वेगाने प्राणघातक — ताबडतोब पशुवैद्य. उरलेल्या कळपाला लस द्या, चराई हळूहळू वाढवा.",
+                en: "Stop green fodder at once; give dry fodder and water. Isolate; if bloated, walk slowly. Rapidly fatal — call the vet now. Vaccinate the rest and increase grazing gradually."}
+  theileriosis:
+    category: cattle_buffalo
+    name: {en: "Theileriosis", mr: "थायलेरिओसिस (गोचीड ताप)", hi: "थीलेरियोसिस"}
+    species: [cattle]
+    notifiable: false
+    zoonotic: false
+    severity: medium
+    season_months: [4, 5, 6, 7]
+    vector_borne: true
+    signs: {fever: 4, ticks: 4, swelling: 2, low_milk: 2, anorexia: 2}
+    min_score: 7
+    action: {en: "Tick-borne - common in crossbred cattle. Treatment works if started early. Regular tick control on animals and shed.",
+             mr: "गोचीडांमुळे होतो - संकरित गायींमध्ये जास्त. लवकर उपचार केल्यास बरा होतो. नियमित गोचीड नियंत्रण करा.",
+             hi: "किलनी जनित - जल्दी इलाज से ठीक होता है। नियमित किलनी नियंत्रण करें।"}
+    home_care: {hi: "पशु को छाया में रखें, ठंडे पानी से शरीर पोंछें, पानी और हरा चारा देते रहें। शरीर और गोठ से किलनी हटाएं (हाथ से निकालकर जलाएं, नीम तेल लगाएं)। जल्दी इलाज से बचाव — उसी दिन पशु चिकित्सक।",
+                mr: "जनावर सावलीत ठेवा, थंड पाण्याने अंग पुसा, पाणी व हिरवा चारा देत रहा. अंगावरील व गोठ्यातील गोचीड काढा (हाताने काढून जाळा, कडुनिंब तेल लावा). लवकर उपचाराने वाचते — त्याच दिवशी पशुवैद्य.",
+                en: "Keep in shade, sponge with cool water, keep offering water and green fodder. Remove ticks from body and shed (pick and burn, apply neem oil). Early treatment saves — vet the same day."}
+  babesiosis:
+    category: cattle_buffalo
+    name: {en: "Babesiosis (Red-water)", mr: "बबेसिओसिस (लाल लघवी)", hi: "बेबेसियोसिस"}
+    species: [cattle, buffalo]
+    notifiable: false
+    zoonotic: false
+    severity: medium
+    season_months: [6, 7, 8, 9]
+    vector_borne: true
+    signs: {red_urine: 6, fever: 3, ticks: 3, anorexia: 1}
+    min_score: 7
+    action: {en: "Red urine plus fever = call the vet the same day. Tick-borne; treatable with injection. Tick control for the whole shed.",
+             mr: "लाल लघवी + ताप = त्याच दिवशी पशुवैद्य बोलवा. गोचीडजन्य; इंजेक्शनने बरा होतो. संपूर्ण गोठ्याचे गोचीड नियंत्रण.",
+             hi: "लाल पेशाब + बुखार = उसी दिन डॉक्टर बुलाएं। इलाज संभव है।"}
+    home_care: {hi: "छाया, आराम और भरपूर पानी दें, ठंडे पानी से पोंछें। किलनी हटाएं और गोठ में नीम पत्ती का धुआँ/तेल लगाएं। लाल पेशाब + बुखार में देर न करें — उसी दिन पशु चिकित्सक को बुलाएं, इंजेक्शन से ठीक होता है।",
+                mr: "सावली, विश्रांती व भरपूर पाणी द्या, थंड पाण्याने पुसा. गोचीड काढा व गोठ्यात कडुनिंब पानांचा धूर/तेल लावा. लाल लघवी + ताप असल्यास उशीर नको — त्याच दिवशी पशुवैद्य बोलवा, इंजेक्शनने बरे होते.",
+                en: "Shade, rest, plenty of water; sponge with cool water. Remove ticks; neem smoke/oil in the shed. Red urine + fever — don't wait; vet the same day, it is treatable by injection."}
+  mastitis:
+    category: cattle_buffalo
+    name: {en: "Mastitis", mr: "कासदाह (दगडी)", hi: "थनैला रोग"}
+    species: [cattle, buffalo, goat]
+    notifiable: false
+    zoonotic: false
+    severity: medium
+    season_months: []
+    vector_borne: false
+    signs: {udder_swelling: 6, low_milk: 3, fever: 2}
+    min_score: 6
+    action: {en: "Milk the affected quarter out fully and often. Clean milking hygiene. Early treatment saves the udder - see the vet.",
+             mr: "बाधित सड पूर्ण व वारंवार पिळून काढा. दोहनाची स्वच्छता पाळा. लवकर उपचाराने कास वाचते.",
+             hi: "प्रभावित थन को पूरा दुहें। दुहने की सफाई रखें। जल्दी इलाज कराएं।"}
+    home_care: {hi: "प्रभावित थन का दूध दिन में 3-4 बार पूरी तरह निकालकर फेंक दें (न पिएं, न बेचें)। थन को गुनगुने पानी से धोकर सुखाएं, हल्दी-एलोवेरा लेप लगाएं। दुहने से पहले-बाद हाथ और थन साफ़ करें। पशु चिकित्सक से जल्दी दवा लें।",
+                mr: "बाधित सडाचे दूध दिवसातून ३-४ वेळा पूर्ण काढून टाका (पिऊ/विकू नका). कास कोमट पाण्याने धुवून कोरडी करा, हळद-कोरफड लेप लावा. दोहनापूर्वी व नंतर हात व कास स्वच्छ करा. पशुवैद्यांकडून लवकर औषध घ्या.",
+                en: "Milk out the affected quarter fully 3–4 times a day and discard (don't drink or sell). Wash the udder with warm water, dry, apply turmeric–aloe paste. Clean hands and udder before and after milking. Get medicine from the vet early."}
+  ranikhet:
+    category: poultry
+    name: {en: "Ranikhet (Newcastle) Disease", mr: "राणीखेत रोग", hi: "रानीखेत रोग"}
+    species: [poultry]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: [11, 12, 1, 2]
+    vector_borne: false
+    signs: {twisted_neck: 5, diarrhoea: 3, egg_drop: 3, cough: 2, sudden_death: 3}
+    min_score: 6
+    action: {en: "Separate sick birds now. Lasota/R2B vaccine protects the flock - ask the para-vet. Bury dead birds; do not sell.",
+             mr: "आजारी पक्षी लगेच वेगळे करा. लसोटा/R2B लस कळपाला वाचवते - पशुमित्राला विचारा. मृत पक्षी पुरा; विकू नका.",
+             hi: "बीमार पक्षियों को अलग करें। लसोटा टीका झुंड को बचाता है।"}
+    home_care: {hi: "बीमार पक्षियों को तुरंत अलग करें, मरे हुए पक्षी गाड़ दें (बेचें नहीं)। बाड़े की सफाई करें, चूना छिड़कें, पानी में हल्दी/लहसुन डालें। बचे हुए स्वस्थ पक्षियों को लसोटा टीका दें — पशुमित्र से पूछें।",
+                mr: "आजारी पक्षी लगेच वेगळे करा, मेलेले पक्षी पुरा (विकू नका). खुराडे स्वच्छ करा, चुना टाका, पाण्यात हळद/लसूण घाला. उरलेल्या निरोगी पक्ष्यांना लसोटा लस द्या — पशुमित्राला विचारा.",
+                en: "Separate sick birds now; bury dead birds (never sell). Clean the coop, sprinkle lime, add turmeric/garlic to water. Give Lasota vaccine to healthy birds — ask the para-vet."}
+  ai_flu:
+    category: poultry
+    name: {en: "Avian Influenza (Bird Flu)", mr: "बर्ड फ्लू", hi: "बर्ड फ्लू"}
+    species: [poultry]
+    notifiable: true
+    zoonotic: true
+    severity: critical
+    season_months: [11, 12, 1, 2]
+    vector_borne: false
+    signs: {sudden_death: 6, swelling: 2, egg_drop: 2, nasal_discharge: 2}
+    min_score: 6
+    action: {en: "Many birds dying fast = report IMMEDIATELY on 1962. Do not touch dead birds bare-handed - can infect humans.",
+             mr: "अनेक पक्षी वेगाने मरत असतील तर ताबडतोब १९६२ वर कळवा. मृत पक्ष्यांना उघड्या हाताने स्पर्श करू नका - माणसांना संसर्ग होऊ शकतो.",
+             hi: "कई पक्षी मर रहे हों तो तुरंत 1962 पर सूचित करें। नंगे हाथ न छुएं।"}
+    home_care: {hi: "घर पर इलाज नहीं। मरे पक्षियों को नंगे हाथ न छुएं — दस्ताने/प्लास्टिक से उठाकर चूने के साथ गाड़ें। बाड़ा बंद करें, पक्षी न बेचें, बच्चों को दूर रखें, हाथ साबुन से धोएं। तुरंत 1962 पर सूचित करें।",
+                mr: "घरी उपचार नाही. मृत पक्ष्यांना उघड्या हाताने स्पर्श करू नका — हातमोजे/प्लास्टिकने उचलून चुन्यासह पुरा. खुराडे बंद करा, पक्षी विकू नका, मुले दूर ठेवा, हात साबणाने धुवा. ताबडतोब १९६२ ला कळवा.",
+                en: "No home treatment. Don't touch dead birds bare-handed — use gloves/plastic and bury with lime. Close the coop, don't sell birds, keep children away, wash hands with soap. Report on 1962 immediately."}
+  csf:
+    category: pig
+    name: {en: "Classical Swine Fever", mr: "वराह ज्वर", hi: "सूकर ज्वर"}
+    species: [pig]
+    notifiable: true
+    zoonotic: false
+    severity: high
+    season_months: []
+    vector_borne: false
+    signs: {fever: 4, sudden_death: 4, diarrhoea: 2, anorexia: 2}
+    min_score: 7
+    action: {en: "Covered under LHDCP vaccination. Isolate sick pigs; no movement or sale. Vet visit within 24h.",
+             mr: "LHDCP लसीकरणात समाविष्ट. आजारी डुकरे वेगळी ठेवा; ने-आण व विक्री नको. २४ तासांत पशुवैद्य.",
+             hi: "बीमार सूअरों को अलग रखें। 24 घंटे में पशु चिकित्सक।"}
+    home_care: {hi: "बीमार सूअरों को अलग रखें, बाड़ा साफ़ करें और चूना छिड़कें, साफ़ पानी और नरम चारा दें। सूअर न बेचें, न बाहर ले जाएं। 24 घंटे में पशु चिकित्सक; बाकी का टीका करवाएं।",
+                mr: "आजारी डुकरे वेगळी ठेवा, वाडा स्वच्छ करून चुना टाका, स्वच्छ पाणी व मऊ खाद्य द्या. डुकरे विकू/बाहेर नेऊ नका. २४ तासांत पशुवैद्य; उरलेल्यांना लस द्या.",
+                en: "Isolate sick pigs, clean the pen and sprinkle lime, give clean water and soft feed. Don't sell or move pigs. Vet within 24 h; vaccinate the rest."}
+
+# Safe first aid a farmer can do at home per symptom (no prescription drugs)
+symptom_first_aid:
+  fever: {hi: "छाया में रखें, ठंडे पानी से शरीर पोंछें, पानी व गुड़-नमक का घोल दें", mr: "सावलीत ठेवा, थंड पाण्याने अंग पुसा, पाणी व गूळ-मीठ पाणी द्या", en: "Keep in shade, sponge with cool water, offer water and jaggery-salt solution"}
+  diarrhoea: {hi: "ORS/गुड़-नमक पानी थोड़ा-थोड़ा बार-बार, हरा चारा कम, सूखा चारा दें", mr: "ORS/गूळ-मीठ पाणी थोडे थोडे वारंवार, हिरवा चारा कमी, कोरडा चारा द्या", en: "ORS or jaggery-salt water little and often; less green, more dry fodder"}
+  bloat: {hi: "पानी-चारा बंद, पशु को धीरे टहलाएं, आगे का हिस्सा ऊँचा रखें — देर न करें, वेट बुलाएं", mr: "पाणी-चारा बंद, हळू चालवा, पुढचा भाग उंच ठेवा — उशीर नको, पशुवैद्य बोलवा", en: "Stop feed and water, walk slowly, keep the front end raised — don't delay, call the vet"}
+  lameness: {hi: "आराम दें, खुर साफ़ करके सुखाएं, नीम/हल्दी पानी से धोएं, कीचड़ से दूर रखें", mr: "विश्रांती द्या, खूर स्वच्छ करून कोरडे करा, कडुनिंब/हळद पाण्याने धुवा, चिखलापासून दूर ठेवा", en: "Rest; clean and dry the hoof, wash with neem/turmeric water, keep off mud"}
+  oral_lesions: {hi: "मुंह फिटकरी/नमक के हल्के पानी से धोएं, नरम दलिया-केला दें", mr: "तोंड तुरटी/मिठाच्या सौम्य पाण्याने धुवा, मऊ पेज-केळी द्या", en: "Rinse mouth with dilute alum/salt water; feed soft porridge and banana"}
+  nodules: {hi: "घाव नीम/हल्दी पानी से धोएं, नीम तेल लगाएं, मक्खियों के लिए नीम का धुआँ करें", mr: "जखमा कडुनिंब/हळद पाण्याने धुवा, कडुनिंब तेल लावा, माश्यांसाठी कडुनिंबाचा धूर करा", en: "Wash with neem/turmeric water, apply neem oil, neem smoke against flies"}
+  anorexia: {hi: "गुड़-नमक पानी, हरा नरम चारा थोड़ा-थोड़ा, छाया व आराम", mr: "गूळ-मीठ पाणी, मऊ हिरवा चारा थोडा थोडा, सावली व विश्रांती", en: "Jaggery-salt water, soft green fodder in small amounts, shade and rest"}
+  ticks: {hi: "हाथ से किलनी निकालकर जलाएं, शरीर व गोठ पर नीम तेल/धुआँ", mr: "हाताने गोचीड काढून जाळा, अंग व गोठ्यावर कडुनिंब तेल/धूर", en: "Pick and burn ticks; neem oil/smoke on the animal and shed"}
+  udder_swelling: {hi: "थन का दूध पूरी तरह निकालकर फेंकें, गुनगुने पानी से धोएं, हल्दी-एलोवेरा लेप", mr: "सडाचे दूध पूर्ण काढून टाका, कोमट पाण्याने धुवा, हळद-कोरफड लेप लावा", en: "Milk out fully and discard, wash with warm water, turmeric–aloe paste"}
+  sudden_death: {hi: "शव को न छुएं, न काटें; चूना डालकर घेरें, बच्चे-कुत्ते दूर; तुरंत 1962", mr: "मृत जनावराला स्पर्श/कापू नका; चुना टाकून घेरा, मुले-कुत्रे दूर; ताबडतोब १९६२", en: "Don't touch or cut the carcass; lime and cordon, keep children and dogs away; call 1962 now"}

@@ -1,0 +1,153 @@
+# =============================================================================
+#  SCHEDULED ANIMAL DISEASES OF INDIA — reference list, not the triage KB
+# =============================================================================
+#  Source: THE SCHEDULE to the Prevention and Control of Infectious and
+#  Contagious Diseases in Animals Act, 2009 (Act 27 of 2009) — the statutory
+#  list of diseases a keeper or veterinarian is legally required to report.
+#
+#  Verified against two independent government-linked transcriptions, which
+#  agree exactly: 83 diseases in 7 categories.
+#    - Directorate of AH & Veterinary, Govt. of Assam
+#      https://veterinary.assam.gov.in/information-services/scheduled-animal-diseases
+#    - Act text: https://www.indiacode.nic.in/handle/123456789/2101
+#
+#  WHY THIS FILE EXISTS
+#  --------------------
+#  The "108 diseases" figure quoted for Maharashtra's 1962 Pashudhan Sanjivani
+#  service is described on the DAHD Maharashtra scheme page, but that list is
+#  NOT published anywhere public — it lives inside the call-centre software. Do
+#  not quote the number as if we had seen it. This statutory list of 83 is the
+#  defensible public baseline to measure our own coverage against.
+#
+#  HOW IT IS USED
+#  --------------
+#  Reference only — `diseases.yaml` stays the triage knowledge base, because
+#  triage needs sign weights, seasonality and farmer advisories per disease,
+#  which a legal list does not carry. Use this file to decide what to add next
+#  and to answer "how many diseases do you cover, and out of what?".
+#
+#  covered: true  -> already in rules/diseases.yaml with full triage rules
+#  priority: high -> endemic in India and worth adding next
+# =============================================================================
+
+meta:
+  source: "Prevention and Control of Infectious and Contagious Diseases in Animals Act, 2009 — Schedule"
+  total: 83
+  covered_now: 13          # of the 83 scheduled diseases
+  also_covered_unscheduled: 4   # BQ, mastitis, mange, enterotoxaemia (see below)
+
+# --------------------------------------------------- A · multiple species ---
+multiple_species:            # 21
+  - { name: "Anthrax",                              covered: true,  key: anthrax, zoonotic: true }
+  - { name: "Aujeszky's disease",                   covered: false }
+  - { name: "Blue tongue",                          covered: false, priority: high }
+  - { name: "Brucellosis",                          covered: true,  key: brucellosis, zoonotic: true }
+  - { name: "Crimean Congo Haemorrhagic fever",     covered: false, zoonotic: true }
+  - { name: "Echinococcosis / hydatidosis",         covered: false, zoonotic: true }
+  - { name: "Foot and mouth disease",               covered: true,  key: fmd }
+  - { name: "Heart water",                          covered: false }
+  - { name: "Japanese encephalitis",                covered: false, zoonotic: true, priority: high }
+  - { name: "Leptospirosis",                        covered: false, zoonotic: true, priority: high }
+  - { name: "New world screw worm",                 covered: false }
+  - { name: "Old world screw worm",                 covered: false }
+  - { name: "Paratuberculosis (Johne's disease)",   covered: false, priority: high }
+  - { name: "Q fever",                              covered: false, zoonotic: true }
+  - { name: "Rabies",                               covered: true,  key: rabies, zoonotic: true }
+  - { name: "Rift valley fever",                    covered: false, zoonotic: true }
+  - { name: "Rinderpest",                           covered: false }   # eradicated, still scheduled
+  - { name: "Trichinellosis",                       covered: false, zoonotic: true }
+  - { name: "Tularemia",                            covered: false, zoonotic: true }
+  - { name: "Vesicular stomatitis",                 covered: false }
+  - { name: "West Nile fever",                      covered: false, zoonotic: true }
+
+# ------------------------------------------------------------- B · cattle ---
+cattle:                      # 15
+  - { name: "Bovine anaplasmosis",                  covered: false }
+  - { name: "Bovine babesiosis",                    covered: true,  key: babesiosis }
+  - { name: "Bovine genital campylobacteriosis",    covered: false }
+  - { name: "Bovine spongiform encephalopathy",     covered: false }
+  - { name: "Bovine tuberculosis",                  covered: false, zoonotic: true, priority: high }
+  - { name: "Bovine viral diarrhoea",               covered: false, priority: high }
+  - { name: "Contagious bovine pleuropneumonia",    covered: false }
+  - { name: "Enzootic bovine leucosis",             covered: false }
+  - { name: "Haemorrhagic septicaemia",             covered: true,  key: hs }
+  - { name: "Infectious bovine rhinotracheitis / IPV", covered: false, priority: high }
+  - { name: "Lumpy skin disease",                   covered: true,  key: lsd }
+  - { name: "Malignant catarrhal fever",            covered: false }
+  - { name: "Theileriosis",                         covered: true,  key: theileriosis }
+  - { name: "Trichomonosis",                        covered: false }
+  - { name: "Trypanosomosis (Surra)",               covered: false, priority: high }
+
+# ----------------------------------------------------- C · sheep and goat ---
+sheep_goat:                  # 11
+  - { name: "Caprine arthritis / encephalitis",     covered: false }
+  - { name: "Contagious agalactia",                 covered: false, priority: high }
+  - { name: "Contagious caprine pleuropneumonia",   covered: false, priority: high }
+  - { name: "Enzootic abortion of ewes (ovine chlamydiosis)", covered: false }
+  - { name: "Maedi-Visna",                          covered: false }
+  - { name: "Nairobi sheep disease",                covered: false }
+  - { name: "Ovine epididymitis (Brucella ovis)",   covered: false }
+  - { name: "Peste des petits ruminants (PPR)",     covered: true,  key: ppr }
+  - { name: "Salmonellosis (S. abortusovis)",       covered: false }
+  - { name: "Scrapie",                              covered: false }
+  - { name: "Sheep pox and goat pox",               covered: true,  key: sgpox }
+
+# ------------------------------------------------------------- D · equine ---
+equine:                      # 13 — we carry no equine species yet
+  - { name: "African horse sickness",               covered: false }
+  - { name: "Contagious equine metritis",           covered: false }
+  - { name: "Dourine",                              covered: false }
+  - { name: "Equine encephalomyelitis (Eastern)",   covered: false, zoonotic: true }
+  - { name: "Equine encephalomyelitis (Western)",   covered: false, zoonotic: true }
+  - { name: "Equine infectious anaemia",            covered: false }
+  - { name: "Equine influenza",                     covered: false }
+  - { name: "Equine piroplasmosis",                 covered: false }
+  - { name: "Equine rhinopneumonitis",              covered: false }
+  - { name: "Equine viral arteritis",               covered: false }
+  - { name: "Glanders",                             covered: false, zoonotic: true, priority: high }
+  - { name: "Surra (Trypanosoma evansi)",           covered: false }
+  - { name: "Venezuelan equine encephalomyelitis",  covered: false, zoonotic: true }
+
+# -------------------------------------------------------------- E · swine ---
+swine:                       # 7
+  - { name: "African swine fever",                  covered: false, priority: high }
+  - { name: "Classical swine fever",                covered: true,  key: csf }
+  - { name: "Nipah viral encephalitis",             covered: false, zoonotic: true, priority: high }
+  - { name: "Porcine cysticercosis",                covered: false, zoonotic: true }
+  - { name: "Porcine reproductive and respiratory syndrome", covered: false }
+  - { name: "Swine vesicular disease",              covered: false }
+  - { name: "Transmissible gastroenteritis",        covered: false }
+
+# -------------------------------------------------------------- F · avian ---
+avian:                       # 14
+  - { name: "Avian chlamydiosis",                   covered: false, zoonotic: true }
+  - { name: "Avian infectious bronchitis",          covered: false, priority: high }
+  - { name: "Avian infectious laryngotracheitis",   covered: false }
+  - { name: "Avian mycoplasmosis (M. gallisepticum)", covered: false, priority: high }
+  - { name: "Avian mycoplasmosis (M. synoviae)",    covered: false }
+  - { name: "Duck virus hepatitis",                 covered: false }
+  - { name: "Fowl cholera",                         covered: false, priority: high }
+  - { name: "Fowl typhoid",                         covered: false, priority: high }
+  - { name: "Avian influenza (HPAI and LPAI in poultry)", covered: true, key: ai_flu, zoonotic: true }
+  - { name: "Infectious bursal disease (Gumboro)",  covered: false, priority: high }
+  - { name: "Marek's disease",                      covered: false, priority: high }
+  - { name: "Newcastle disease (Ranikhet)",         covered: true,  key: ranikhet }
+  - { name: "Pullorum disease",                     covered: false }
+  - { name: "Turkey rhinotracheitis",               covered: false }
+
+# -------------------------------------------------------------- G · other ---
+other:                       # 2
+  - { name: "Camel pox",                            covered: false }
+  - { name: "Leishmaniosis",                        covered: false, zoonotic: true }
+
+# =============================================================================
+#  COVERED BY US BUT *NOT* SCHEDULED
+#  These are production diseases, not notifiable ones. They are in our triage KB
+#  because they are what a farmer actually rings about — a surveillance system a
+#  farmer will use has to answer the everyday complaint, not only the legal one.
+# =============================================================================
+not_scheduled_but_covered:
+  - { name: "Black Quarter (फऱ्या)",  key: bq,       note: "clostridial, vaccine-preventable, common in Maharashtra" }
+  - { name: "Mastitis",                key: mastitis, note: "the single biggest milk-loss complaint" }
+  - { name: "Mange / skin infestation", key: mange,   note: "very common, easily confused with LSD early on" }
+  - { name: "Enterotoxaemia",          key: et,       note: "sudden death in goats and sheep" }

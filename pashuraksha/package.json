@@ -1,0 +1,13 @@
+{
+  "name": "pashuraksha",
+  "version": "1.0.0",
+  "description": "PashuAarogya AI — livestock disease early-warning, surveillance & response platform (SIH PS 26128)",
+  "private": true,
+  "scripts": {
+    "dev": "cd backend && python main.py",
+    "start": "cd backend && python main.py",
+    "tunnel": "python tunnel.py",
+    "setup": "cd backend && python -m pip install -r requirements.txt",
+    "reset": "node -e \"require('fs').rmSync('backend/pashuraksha.db',{force:true});console.log('DB reset — reseeds on next start')\""
+  }
+}

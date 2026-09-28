@@ -1,0 +1,45 @@
+# Render Blueprint — deploys PashuAarogya as ONE web service that serves both
+# the API and the frontend (they are already a single FastAPI app), plus a
+# free Postgres database so records survive restarts and redeploys.
+#
+#   Render dashboard → New → Blueprint → point at this repo.
+#
+# Everything below is free-tier. Two known free-tier limits, both handled:
+#   * the disk is ephemeral  → we use Postgres, never the SQLite file
+#   * the service sleeps after 15 min idle → see the keep-alive note in DEPLOY.md
+services:
+  - type: web
+    name: pashuaarogya
+    runtime: python
+    plan: free
+    region: singapore                 # closest Render region to India
+    rootDir: pashuraksha
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd backend && python main.py
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: PASHU_DB_URL             # wired to the database below
+        fromDatabase:
+          name: pashuaarogya-db
+          property: connectionString
+      - key: PASHU_SECRET             # signs the session tokens
+        generateValue: true
+      - key: GEMINI_API_KEY           # Pashu Mitra's brain — paste in the dashboard
+        sync: false
+      # Pashu Lens (235 MB TensorFlow model) cannot fit a 512 MB free instance.
+      # Declaring it off makes the app say so cleanly and offer manual animal
+      # registration, instead of probing a sidecar that isn't there.
+      # Running the model elsewhere? Set this to 0 and point PASHU_AI_URL at it.
+      - key: PASHU_AI_DISABLED
+        value: "1"
+      - key: PASHU_AI_URL             # only used when PASHU_AI_DISABLED=0
+        sync: false
+
+databases:
+  - name: pashuaarogya-db
+    plan: free
+    region: singapore
+    databaseName: pashuaarogya

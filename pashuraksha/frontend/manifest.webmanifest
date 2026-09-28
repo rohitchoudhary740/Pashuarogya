@@ -1,0 +1,54 @@
+{
+  "name": "पशुआरोग्य — PashuAarogya AI",
+  "short_name": "पशुआरोग्य",
+  "description": "Livestock disease early-warning, surveillance & response — Govt. of Maharashtra (SIH PS 26128)",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1B4C8C",
+  "background_color": "#3F4140",
+  "lang": "hi",
+  "categories": [
+    "government",
+    "health",
+    "agriculture"
+  ],
+  "icons": [
+    {
+      "src": "/icons/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "बीमार पशु की रिपोर्ट करें",
+      "short_name": "रिपोर्ट",
+      "url": "/farmer.html",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

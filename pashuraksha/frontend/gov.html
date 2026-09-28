@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1B4C8C">
+<link rel="apple-touch-icon" href="/icons/apple-180.png?v=9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png?v=9">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PashuAarogya — Official Portal</title>
+<link rel="stylesheet" href="/css/app.css?v=9">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+/* ---- Maharashtra Government portal look (light) ---- */
+body{background:var(--paper)}
+.gov-top{background:#fff;border-bottom:1px solid var(--hair)}
+.gov-top .tricolor{height:5px;background:linear-gradient(90deg,#F4801F 33%,#FFF 33% 66%,#1E7A46 66%);
+  border-bottom:1px solid var(--hair)}
+.gov-top .inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;
+  gap:15px;padding:12px 22px}
+.gov-emblem{width:52px;height:52px;border-radius:50%;flex:0 0 52px;display:flex;
+  align-items:center;justify-content:center;font-size:28px;background:#fff;
+  border:2.5px solid var(--saffron);box-shadow:0 2px 8px rgba(232,114,12,.25)}
+.gov-top h1{font-family:var(--f-d);font-weight:700;font-size:22px;margin:0;
+  color:var(--navy);letter-spacing:.01em;line-height:1.05}
+.gov-top .mr-name{color:var(--saffron)}
+.gov-top .sub{font-size:12px;color:var(--muted);letter-spacing:.02em}
+.gov-top .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.gov-clock{font-family:var(--f-m);font-size:12px;color:var(--muted);
+  font-variant-numeric:tabular-nums;text-align:right}
+.gov-role{background:var(--navy-soft);color:var(--navy);border:1px solid #C7D6EC;
+  padding:5px 14px;border-radius:99px;font-family:var(--f-m);font-size:10.5px;
+  letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.btn-out{background:#fff;border:1.5px solid var(--hair);color:var(--muted);
+  padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600}
+.btn-out:hover{border-color:var(--navy);color:var(--navy)}
+
+/* navy nav band */
+.navband{background:linear-gradient(120deg,var(--navy-deep),var(--navy))}
+.navband .inner{max-width:1320px;margin:0 auto;display:flex;padding:0 14px;overflow-x:auto}
+.navtab{background:transparent;border:0;color:#C9D8EE;padding:13px 20px;font-family:var(--f-d);
+  font-weight:600;font-size:15.5px;letter-spacing:.03em;border-bottom:3.5px solid transparent;
+  white-space:nowrap;display:flex;align-items:center;gap:8px}
+.navtab .ct{background:rgba(255,255,255,.18);font-family:var(--f-m);font-size:10.5px;
+  padding:1px 8px;border-radius:99px}
+.navtab.active{color:#fff;border-bottom-color:var(--saffron);background:rgba(255,255,255,.06)}
+.navtab:hover{color:#fff}
+
+.wrap{max-width:1320px}
+#map{height:520px;border-radius:12px;border:1px solid var(--hair)}
+
+/* KPI refinement */
+.kpi .v{font-size:32px}
+.kpi .sub2{font-family:var(--f-m);font-size:10px;margin-top:6px;display:inline-block;
+  padding:2px 8px;border-radius:99px}
+.sub2.alert{background:var(--red-soft);color:var(--red)}
+.sub2.calm{background:var(--green-soft);color:var(--green)}
+
+/* radar cards (light) */
+.radar-card{background:#FFF9F5;border:1px solid #F3D2B8;border-left:4px solid var(--red);
+  border-radius:0 10px 10px 0;padding:13px 16px;margin-bottom:11px}
+.radar-card.zoo{border-left-color:#7C3AED;background:#FBF7FF;border-color:#E4D4F9}
+.radar-card .t{font-family:var(--f-d);font-weight:700;font-size:15.5px;color:var(--ink)}
+.radar-card .stats{display:flex;gap:20px;margin:8px 0 6px}
+.radar-card .stats b{display:block;font-size:19px;font-family:var(--f-d);color:var(--ink)}
+.radar-card .stats span{font-family:var(--f-m);font-size:9px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted)}
+.radar-card .act{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--hair);
+  padding-top:7px}
+.radar-card .meta{font-family:var(--f-m);font-size:10.5px;color:var(--muted);margin-top:6px}
+.chip-onehealth{background:#F3EBFE;color:#7C3AED;border:1px solid #DDC8F8;
+  font-family:var(--f-m);font-size:9.5px;font-weight:700;letter-spacing:.05em;
+  padding:2px 9px;border-radius:99px;text-transform:uppercase}
+
+/* task rows */
+.task{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--hair);
+  border-radius:10px;padding:13px 15px;margin-bottom:10px}
+.task .tk-ic{width:40px;height:40px;flex:0 0 40px;border-radius:10px;display:flex;
+  align-items:center;justify-content:center;font-size:20px;background:var(--navy-soft)}
+.task.done{opacity:.55}
+.task .tt{font-weight:600;font-size:14.5px;line-height:1.35}
+.task .tm{font-family:var(--f-m);font-size:10.5px;color:var(--muted);margin-top:3px}
+.task .actions{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+
+/* claim status chips */
+.chip.FILED{background:var(--navy-soft);color:var(--navy)}
+.chip.UNDER_REVIEW{background:var(--amber-soft);color:var(--amber)}
+.chip.APPROVED,.chip.PAID{background:var(--green-soft);color:var(--green)}
+.chip.REJECTED{background:var(--red-soft);color:var(--red)}
+
+.risk-score-big{font-family:var(--f-d);font-size:44px;font-weight:700;line-height:1}
+.panel-note{background:var(--navy-soft);border:1px solid #C7D6EC;border-radius:10px;
+  padding:12px 16px;font-size:13px;color:var(--navy);margin-bottom:14px}
+.section-head{display:flex;align-items:center;justify-content:space-between;
+  margin:4px 0 14px;flex-wrap:wrap;gap:10px}
+.section-head h2{font-family:var(--f-d);font-size:22px;color:var(--navy);margin:0;
+  letter-spacing:.01em}
+.section-head .mr{font-size:13px;color:var(--muted)}
+.leaflet-container{font-family:var(--f-b)}
+@media(max-width:1100px){.two-col{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+<header class="gov-top">
+  <div class="tricolor"></div>
+  <div class="inner">
+    <div class="gov-emblem"><img src="/icons/logo-mark.png?v=9" alt="Pashu Aarogya" onerror="this.parentNode.textContent='🐄'"></div>
+    <div>
+      <h1><span class="mr-name">पशुआरोग्य</span> · PashuAarogya Portal</h1>
+      <div class="sub">पशुपालन विभाग, महाराष्ट्र शासन · Dept. of Animal Husbandry, Govt. of Maharashtra</div>
+    </div>
+    <div class="right">
+      <span class="syncpill" id="syncPill" title="Live database sync"><span class="dot"></span><span class="lbl">…</span></span>
+      <div class="gov-clock" id="clock"></div>
+      <span class="gov-role" id="who"></span>
+      <button class="btn-out" onclick="API.logout()">Logout</button>
+    </div>
+  </div>
+</header>
+<nav class="navband"><div class="inner" id="navtabs"></div></nav>
+<div id="netbar">⚠ Offline</div>
+
+<div class="wrap" id="view"></div>
+
+<footer class="gov">पशुआरोग्य · Government of Maharashtra · Surveillance data shown is a calibrated
+  simulation for demonstration · Farmer identity is never exposed on public maps ·
+  AI output is decision support — diagnosis remains with registered veterinarians</footer>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/js/api.js?v=9"></script>
+<script src="/js/assistant.js?v=9"></script>
+<script src="/js/gov.js?v=9"></script>
+</body>
+</html>

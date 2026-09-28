@@ -1,0 +1,12 @@
+{
+  "name": "sih-2026-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix pashuraksha run dev",
+    "start": "npm --prefix pashuraksha run start",
+    "setup": "npm --prefix pashuraksha run setup",
+    "tunnel": "npm --prefix pashuraksha run tunnel",
+    "reset": "npm --prefix pashuraksha run reset"
+  }
+}

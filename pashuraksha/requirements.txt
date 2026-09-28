@@ -1,0 +1,7 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+pyyaml>=6.0
+# Postgres driver — only used when PASHU_DB_URL / DATABASE_URL points at Postgres.
+# Harmless locally, required for any cloud deploy with a persistent database.
+psycopg2-binary>=2.9

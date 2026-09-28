@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>PashuAarogya — PS 26128 Gap Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+<style>
+@page { size: A4 landscape; margin: 0; }
+:root{
+  --ink:#12161D; --muted:#56617A; --hair:#CDD3DF; --hair-lt:#E7EAF1;
+  --paper:#FFFFFF; --tint:#F4F6FA;
+  --blue:#0B3E77; --blue-soft:#E4ECF8;
+  --saffron:#C25E10; --saffron-soft:#FCEFE2;
+  --met:#1C6B41; --met-soft:#E2F1E7;
+  --part:#94600A; --part-soft:#FBF0D9;
+  --gap:#A5332A; --gap-soft:#FBE6E3;
+  --f-d:"Archivo","Segoe UI",Arial,sans-serif;
+  --f-b:"Source Serif 4",Georgia,serif;
+  --f-m:"IBM Plex Mono",Consolas,monospace;
+  --f-dev:"Noto Sans Devanagari","Nirmala UI",sans-serif;
+}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html,body{margin:0;background:var(--paper);}
+body{font-family:var(--f-b);font-size:9.6pt;line-height:1.42;color:var(--ink);}
+.dev{font-family:var(--f-dev);}
+strong{font-weight:600;}
+code,.mono{font-family:var(--f-m);font-size:.86em;}
+code{background:var(--tint);padding:.05em .3em;border-radius:2px;}
+p{margin:0 0 2mm;}
+
+/* ---------- page frame ---------- */
+.page{width:297mm;height:210mm;padding:11mm 14mm 9mm;position:relative;
+  page-break-after:always;break-after:page;overflow:hidden;display:flex;flex-direction:column;}
+.page:last-child{page-break-after:auto;break-after:auto;}
+.top{display:flex;align-items:baseline;gap:3mm;border-top:2.4pt solid var(--ink);padding-top:2mm;margin-bottom:1.5mm;}
+.top .sec{font-family:var(--f-m);font-size:7.2pt;letter-spacing:.14em;text-transform:uppercase;color:var(--saffron);font-weight:600;}
+.top .crumb{margin-left:auto;font-family:var(--f-m);font-size:7pt;color:var(--muted);}
+h2{font-family:var(--f-d);font-size:19pt;font-weight:800;letter-spacing:-.015em;line-height:1.05;margin:0 0 1.6mm;}
+.lede{font-size:10.4pt;color:#2B3345;max-width:250mm;margin-bottom:4mm;}
+.foot{margin-top:auto;display:flex;justify-content:space-between;font-family:var(--f-m);font-size:6.8pt;color:var(--muted);
+  border-top:.6pt solid var(--hair-lt);padding-top:1.8mm;}
+
+/* ---------- status pills ---------- */
+.pill{display:inline-block;font-family:var(--f-d);font-weight:700;font-size:6.9pt;letter-spacing:.06em;
+  padding:.5mm 1.8mm;border-radius:5mm;white-space:nowrap;}
+.met{background:var(--met-soft);color:var(--met);}
+.part{background:var(--part-soft);color:var(--part);}
+.gap{background:var(--gap-soft);color:var(--gap);}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;}
+th{font-family:var(--f-d);font-size:7pt;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+  text-align:left;padding:1.4mm 2mm;border-bottom:.9pt solid var(--ink);}
+td{padding:1.8mm 2mm;vertical-align:top;border-bottom:.5pt solid var(--hair-lt);font-size:8.5pt;line-height:1.36;}
+tr:last-child td{border-bottom:none;}
+td.req{font-family:var(--f-d);font-weight:600;font-size:8.6pt;line-height:1.25;}
+td.req small{display:block;font-family:var(--f-b);font-weight:400;font-style:italic;color:var(--muted);font-size:7.6pt;margin-top:.6mm;}
+td .where{display:block;font-family:var(--f-m);font-size:6.9pt;color:var(--blue);margin-top:.8mm;}
+td.st{white-space:nowrap;}
+td.fix{background:#FAFBFD;}
+
+/* ---------- cover ---------- */
+.cover{background:linear-gradient(180deg,#FFFFFF 0%,#FFFFFF 62%,var(--tint) 62%);}
+.cover .kick{font-family:var(--f-m);font-size:8pt;letter-spacing:.18em;text-transform:uppercase;color:var(--saffron);font-weight:600;margin:6mm 0 4mm;}
+.cover h1{font-family:var(--f-d);font-size:40pt;font-weight:800;letter-spacing:-.025em;line-height:.98;margin:0 0 4mm;max-width:215mm;}
+.cover h1 em{font-style:normal;color:var(--blue);}
+.cover .sub{font-size:12pt;color:#2B3345;max-width:200mm;margin-bottom:7mm;}
+.score{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-bottom:5mm;}
+.score .c{background:#fff;border:.6pt solid var(--hair);border-radius:1.6mm;padding:3.5mm 4mm;}
+.score .v{font-family:var(--f-d);font-size:30pt;font-weight:800;line-height:1;}
+.score .k{font-family:var(--f-d);font-size:8.2pt;font-weight:600;margin-top:1mm;}
+.score .d{font-size:7.8pt;color:var(--muted);margin-top:.6mm;}
+.bar{display:flex;height:4mm;border-radius:2mm;overflow:hidden;margin:1mm 0 1.4mm;}
+.bar span{display:block;}
+.verdict{border-left:3pt solid var(--saffron);padding:2.5mm 4mm;background:#fff;font-size:10.4pt;max-width:255mm;}
+.verdict b{font-family:var(--f-d);}
+
+/* ---------- boxes ---------- */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:6mm;}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:4.5mm;}
+.box{border:.6pt solid var(--hair);border-radius:1.6mm;padding:3.2mm 3.8mm;background:#fff;}
+.box h3{font-family:var(--f-d);font-size:10.5pt;font-weight:700;margin:0 0 1.6mm;}
+.box ul,.box ol{margin:0;padding-left:4.2mm;}
+.box li{margin-bottom:1.3mm;font-size:8.9pt;}
+.good{border-top:3pt solid var(--met);}
+.bad{border-top:3pt solid var(--gap);}
+.act{border-top:3pt solid var(--blue);}
+.callout{border:.8pt solid var(--gap);background:var(--gap-soft);border-radius:1.6mm;padding:3mm 4mm;font-size:9.2pt;}
+.callout .t{font-family:var(--f-d);font-weight:700;color:var(--gap);font-size:8pt;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1mm;}
+.note{border-left:2.4pt solid var(--blue);background:var(--blue-soft);padding:2.4mm 3.6mm;font-size:9pt;border-radius:0 1.2mm 1.2mm 0;}
+
+/* ---------- ecosystem layers ---------- */
+.stack{display:flex;flex-direction:column;gap:1.6mm;}
+.layer{border-radius:1.4mm;padding:2.6mm 3.4mm;display:flex;align-items:center;gap:3mm;}
+.layer .lbl{font-family:var(--f-m);font-size:6.8pt;letter-spacing:.1em;text-transform:uppercase;width:24mm;flex:none;opacity:.8;}
+.layer .body{font-size:8.8pt;}
+.layer.us{background:var(--blue);color:#fff;}
+.layer.src{background:var(--tint);}
+.layer.out{background:var(--saffron-soft);}
+.arrow{text-align:center;font-family:var(--f-m);font-size:8pt;color:var(--muted);line-height:1;}
+
+/* ---------- innovation cards ---------- */
+.inno{display:grid;grid-template-columns:repeat(3,1fr);gap:3.6mm;}
+.card{border:.6pt solid var(--hair);border-radius:1.6mm;padding:3mm 3.4mm;background:#fff;display:flex;flex-direction:column;}
+.card .hd{display:flex;align-items:baseline;gap:2mm;margin-bottom:1.2mm;}
+.card .id{font-family:var(--f-m);font-weight:600;font-size:8pt;color:#fff;background:var(--blue);border-radius:1mm;padding:.3mm 1.4mm;}
+.card .nm{font-family:var(--f-d);font-weight:700;font-size:10pt;line-height:1.15;}
+.card p{font-size:8.4pt;margin-bottom:1.6mm;}
+.card .meta{margin-top:auto;display:flex;flex-wrap:wrap;gap:1.2mm;font-family:var(--f-m);font-size:6.8pt;}
+.card .meta span{background:var(--tint);border-radius:.8mm;padding:.4mm 1.4mm;}
+.card .meta .ps{background:var(--saffron-soft);color:var(--saffron);}
+.card .demo{font-size:8pt;color:#2B3345;border-top:.5pt dashed var(--hair);padding-top:1.2mm;margin-bottom:1.6mm;}
+.card .demo b{font-family:var(--f-d);font-size:7pt;letter-spacing:.06em;color:var(--met);}
+.card.top{border-top:3pt solid var(--saffron);}
+.stars{color:var(--saffron);letter-spacing:.05em;}
+
+/* ---------- plan ---------- */
+.prio{font-family:var(--f-d);font-weight:800;font-size:8pt;color:#fff;border-radius:1mm;padding:.4mm 1.6mm;}
+.p0{background:var(--gap);} .p1{background:var(--part);} .p2{background:var(--muted);}
+.owner{display:inline-block;border-bottom:.6pt solid var(--hair);width:22mm;height:3.4mm;}
+
+/* ---------- Q&A ---------- */
+.qa td{font-size:8.3pt;}
+.qa .q{font-family:var(--f-d);font-weight:600;font-size:8.6pt;}
+.qa .weak{color:var(--gap);}
+.qa .strong{background:var(--met-soft);}
+
+.src li{font-size:8.2pt;margin-bottom:1.4mm;}
+.src a{color:var(--blue);text-decoration:none;word-break:break-all;}
+</style></head><body>
+
+<!-- ================= 1 · COVER ================= -->
+<section class="page cover">
+  <div class="top"><span class="sec">SIH 2026 · PS 26128 · Govt. of Maharashtra / MSInS</span><span class="crumb">Internal team review · PashuAarogya</span></div>
+  <div class="kick">Gap analysis · problem statement vs what we built</div>
+  <h1>Are we building <em>exactly</em> what Maharashtra asked for?</h1>
+  <p class="sub">Every line of PS 26128 is checked against the actual code in our repository, not our slides or
+  our memory. We also compare it with the systems Maharashtra's animal-husbandry department already runs.
+  The goal is to show the team where we're behind and what to build next.</p>
+
+  <div class="score">
+    <div class="c"><div class="v" style="color:var(--met)">6</div><div class="k">Fully met</div><div class="d">Built, working, demoable</div></div>
+    <div class="c"><div class="v" style="color:var(--part)">13</div><div class="k">Partly met</div><div class="d">Present, but shallow or incomplete</div></div>
+    <div class="c"><div class="v" style="color:var(--gap)">3</div><div class="k">Not met</div><div class="d">All three are PS <em>outcomes</em> we can't measure</div></div>
+    <div class="c"><div class="v" style="color:var(--blue)">57%</div><div class="k">Weighted coverage</div><div class="d">Met = 1, Partly = ½, over 22 PS items</div></div>
+  </div>
+  <div class="bar"><span style="width:27.3%;background:var(--met)"></span><span style="width:59.1%;background:#D9A441"></span><span style="width:13.6%;background:var(--gap)"></span></div>
+
+  <div class="verdict"><b>Verdict:</b> we built the right <em>kind</em> of system, and several parts go further than the PS asks for.
+  We're behind on three things: <b>(1)</b> we don't measure the outcomes the PS lists,
+  <b>(2)</b> we pitch a standalone app when we should be the layer that joins up 1962 and Bharat Pashudhan,
+  and <b>(3)</b> alerts reach farmers only inside the app. All three can be fixed before the finale.</div>
+
+  <div class="foot"><span>Assessed against repository commit <b>a63324a</b> · every claim traced to a file and line</span><span>1 / 12</span></div>
+</section>
+
+<!-- ================= 2 · EXEC SUMMARY ================= -->
+<section class="page">
+  <div class="top"><span class="sec">01 · The answer in one page</span><span class="crumb">Read this if you read nothing else</span></div>
+  <h2>Right direction. Three strategic gaps. Five fixes that matter most.</h2>
+  <p class="lede">Every capability the PS lists is at least partly there. The judges from the department will probe three places.
+  If we fix those, most of the "partly met" items become "met" as a side effect.</p>
+
+  <div class="cols3" style="margin-bottom:4.5mm">
+    <div class="box good"><h3>✅ What we got right</h3><ul>
+      <li><strong>Real outbreak detection</strong>: a space-time scan statistic that gives a p-value, not a colour-coded guess.</li>
+      <li><strong>Closed loop</strong>: report → triage → sample → lab → cluster → task → compensation.</li>
+      <li><strong>Officials' side</strong> is strong: radar, what-if forecast, SITREP, history, live sync, CSV export.</li>
+      <li><strong>Low-friction reporting</strong>: voice in Hindi/Marathi, icons, offline queue.</li>
+      <li><strong>Food safety</strong>: milk/meat withdrawal alerts after treatment. The PS doesn't ask for this; judges will like it.</li>
+    </ul></div>
+    <div class="box bad"><h3>⚠️ The three strategic gaps</h3><ol>
+      <li><strong>Outcomes are unmeasured.</strong> The PS names 6 expected outcomes. We measure 1. The report form never asks
+        when the animal fell ill (the API hard-codes <code>onset_date = today</code>), so we can't show reduced reporting time.</li>
+      <li><strong>We pitch as a standalone app.</strong> The real overlap is small: Bharat Pashudhan keeps records for
+        <em>tagged</em> animals, and the 1962 Farmer App offers home remedies for some diseases (checked by our team).
+        But a standalone pitch invites the question "why not just use 1962?"</li>
+      <li><strong>Advisories stay inside the app.</strong> There's no SMS, push, or voice broadcast. Outbreak
+        advisories also reach only the epicentre village, not the whole zone.</li>
+    </ol></div>
+    <div class="box act"><h3>🎯 Five fixes, in order</h3><ol>
+      <li><strong>Onset date + Outcome Scoreboard</strong>: live KPIs for all 6 PS outcomes. <em>Small.</em></li>
+      <li><strong>Reposition + 1962 Signal Bridge</strong>: take 1962 call tickets and Bharat Pashudhan records as inputs. <em>Medium.</em></li>
+      <li><strong>Zone broadcast with acknowledgement</strong>: SMS/voice to every village in the risk zone. <em>Medium.</em></li>
+      <li><strong>LSD-2022 replay</strong>: show on the real Maharashtra outbreak timeline that we detect earlier. <em>Medium.</em></li>
+      <li><strong>Herd/flock mode + death report</strong>: a one-tap mortality report and flock-level poultry records. <em>Medium.</em></li>
+    </ol></div>
+  </div>
+
+  <div class="note"><strong>The one sentence to change in our pitch.</strong> Stop saying <em>"a new app for farmers and vets."</em> Say:
+  <em>"PashuAarogya is the surveillance brain that sits on top of 1962 and Bharat Pashudhan. It turns their one-animal-at-a-time
+  treatment records into village-level early warning."</em> That answers "why not use 1962?" before anyone asks it.</div>
+
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>2 / 12</span></div>
+</section>
+
+<!-- ================= 3 · CAPABILITIES 1–4 ================= -->
+<section class="page">
+  <div class="top"><span class="sec">02 · Expected Solution, line by line (1 of 2)</span><span class="crumb">"A scalable animal-health surveillance and decision-support solution that can…"</span></div>
+  <h2>The eight capabilities the PS lists: what we built vs what they asked for</h2>
+  <table>
+    <tr><th style="width:17%">PS asks for</th><th style="width:30%">What we actually built</th><th style="width:7%">Status</th><th style="width:25%">What's missing</th><th style="width:21%">Fix</th></tr>
+    <tr><td class="req">1 · Capture symptom <u>and mortality</u> reports from farmers <u>and field workers</u></td>
+      <td>3-step report: species → symptoms (icons or voice) → count, deaths, photo. Offline queue with de-duplication. Field-worker login tags the channel as <code>field</code>.
+        <span class="where">farmer.js · main.py:283 /api/reports</span></td>
+      <td class="st"><span class="pill part">PARTLY</span></td>
+      <td>No onset date, so the API hard-codes today (<code>main.py:308</code>). Mortality is only a number inside the symptom form, with no fast "animal died" path. Field workers see the farmer screen: they can't report on another farmer's behalf or log a door-to-door visit with a "nil report".</td>
+      <td class="fix">Add a "कब से बीमार?" onset picker. Add a one-tap 🪦 death report. Add a field-worker mode: pick farmer/village, nil report.</td></tr>
+    <tr><td class="req">2 · Rule-based or AI-assisted triage to flag suspected outbreaks</td>
+      <td>Hot-reloadable YAML rules (17 diseases, 23 signs) → severity band, suspected diseases and a route. Kulldorff-style space-time scan with Poisson p-values finds clusters and auto-creates tasks.
+        <span class="where">engine.py triage() · engine.py scan · rules/diseases.yaml</span></td>
+      <td class="st"><span class="pill met">MET</span></td>
+      <td>17 diseases, well short of the full notifiable-disease list. Triage accuracy has never been measured, and the scan has only ever run on synthetic data.</td>
+      <td class="fix">Expand the KB to the notifiable-disease list. Back-test on LSD 2022 (innovation C).</td></tr>
+    <tr><td class="req">3 · Geospatial risk mapping, weather and historical disease trends</td>
+      <td>Village risk map with an explainable 0–100 score. Live Open-Meteo weather feeds the score. 24-month history by area, disease, species and breed.
+        <span class="where">engine.py:255 weights · weather.py · /api/history</span></td>
+      <td class="st"><span class="pill met">MET</span></td>
+      <td>Weather uses <em>current</em> conditions only and one generic rule (humidity ≥ 70%, 22–35 °C) for every disease. History is seeded, not real. No livestock-density, market or vector layers.</td>
+      <td class="fix">Use the 7-day forecast and disease-specific weather rules. Import real historical data where available.</td></tr>
+    <tr><td class="req">4 · Animal-level <u>or herd-level</u> health, vaccination and treatment records</td>
+      <td>Per-animal tag, health timeline (vaccinations, cases, treatments, withdrawal), QR Health Passport.
+        <span class="where">/api/animals/{id}/health · passport.html</span></td>
+      <td class="st"><span class="pill part">PARTLY</span></td>
+      <td>No herd or flock entity, although poultry and goats aren't individually tagged in practice. No deworming or breeding records. We re-register animals that already have a Pashu Aadhaar in Bharat Pashudhan.</td>
+      <td class="fix">Add a Herd model (counts by species/age). Key everything on the 12-digit Pashu Aadhaar. Read records from NDLM instead of re-typing them.</td></tr>
+  </table>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>3 / 12</span></div>
+</section>
+
+<!-- ================= 4 · CAPABILITIES 5–8 ================= -->
+<section class="page">
+  <div class="top"><span class="sec">02 · Expected Solution, line by line (2 of 2)</span><span class="crumb">Capabilities 5–8</span></div>
+  <h2>Our dashboards are strong. Reaching farmers outside the app is our weakest area.</h2>
+  <table>
+    <tr><th style="width:17%">PS asks for</th><th style="width:30%">What we actually built</th><th style="width:7%">Status</th><th style="width:25%">What's missing</th><th style="width:21%">Fix</th></tr>
+    <tr><td class="req">5 · Issue multilingual advisories and alerts</td>
+      <td>Advisories auto-generated in मराठी / हिन्दी / English when a cluster is detected. Treatment withdrawal alerts and camp notices. The assistant reads answers aloud.
+        <span class="where">engine.py:234 · main.py:427</span></td>
+      <td class="st"><span class="pill part">PARTLY</span></td>
+      <td><strong>In-app only:</strong> a farmer who doesn't open the app never sees them. No push, SMS, WhatsApp or voice broadcast. <strong>Bug:</strong> the outbreak advisory goes to the epicentre village only (<code>village_id=center.id</code>, engine.py:240), although the comment says "zone villages". No read or acknowledgement tracking.</td>
+      <td class="fix">Send to every village in <code>zone_village_ids</code>. Add web push and an SMS gateway. Add "press 1 once done" acknowledgement (innovation E).</td></tr>
+    <tr><td class="req">6 · Sample collection, laboratory referral and case escalation</td>
+      <td>Sample with a chain-of-custody code and 5 stages (COLLECTED → RESULT). A positive result auto-confirms the case and alerts officials. Escalation goes block → district → state.
+        <span class="where">main.py:449 · :485 · :398 escalate</span></td>
+      <td class="st"><span class="pill part">PARTLY</span></td>
+      <td>There's one generic "lab": no lab directory and no routing by disease (avian influenza must go to a BSL-3 national lab). No guidance on sample type or cold chain. Turnaround time isn't tracked. There's no way to refer the <em>animal</em> to a polyclinic.</td>
+      <td class="fix">Add a lab directory with route-by-suspected-disease, a turnaround-time clock, and a "refer to polyclinic" action (innovation G).</td></tr>
+    <tr><td class="req">7 · Dashboards for veterinary officials</td>
+      <td>Vet triage queue and lab board. Block/district/state command centre with radar, what-if forecast, action queue, claims, camps, history, SITREP, CSV export and live cross-dashboard sync.
+        <span class="where">gov.html · vet.html · sitrep.html</span></td>
+      <td class="st"><span class="pill met">MET</span></td>
+      <td>The dashboards show <em>activity</em>, not <em>performance</em>: no per-block response times, no pending work per officer, no targets.</td>
+      <td class="fix">Add an Outcome Scoreboard tab with per-block league tables (innovation B).</td></tr>
+    <tr><td class="req">8 · Mobile, web, IVR or offline-enabled channels</td>
+      <td>Responsive web and an installable PWA. Offline report queue that syncs on reconnect. Voice assistant. IVR simulator page.
+        <span class="where">sw.js · api.js queue · ivr.html</span></td>
+      <td class="st"><span class="pill part">PARTLY</span></td>
+      <td>The IVR is a <strong>browser simulator</strong>, not a phone number anyone can call. The <code>sms</code> channel exists as a label only. The OTP is fixed at <code>123456</code> and no SMS is ever sent (main.py:134).</td>
+      <td class="fix">Use a trial Exotel/Twilio number: missed call → Marathi IVR callback. Parse structured SMS such as <code>LSD 3 1</code> (innovation D).</td></tr>
+  </table>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>4 / 12</span></div>
+</section>
+
+<!-- ================= 5 · OUTCOMES ================= -->
+<section class="page">
+  <div class="top"><span class="sec">03 · Expected Outcomes</span><span class="crumb">"Expected outcomes include…"</span></div>
+  <h2>The PS promises six outcomes. We can currently show one.</h2>
+  <p class="lede">This is our biggest hole, and it's cheap to fix. Judges score <em>impact</em>, and impact means numbers that move.
+  Most of the timestamps we need are already in the database. We just never compute the durations.</p>
+  <table>
+    <tr><th style="width:19%">Expected outcome</th><th style="width:8%">Status</th><th style="width:33%">Where we stand</th><th style="width:40%">The KPI to show (and where the data already lives)</th></tr>
+    <tr><td class="req">Reduced reporting time</td><td class="st"><span class="pill gap">NOT MET</span></td>
+      <td>Can't be measured: <code>onset_date</code> is hard-coded to today (main.py:308) and the seeded data sets onset = report date. The delay is <strong>always zero</strong>.</td>
+      <td><strong>Median onset → report, in hours</strong>, trended weekly and split by channel (app / field / IVR). Needs the onset picker first.</td></tr>
+    <tr><td class="req">Earlier outbreak identification</td><td class="st"><span class="pill gap">NOT MET</span></td>
+      <td>We detect clusters, but we claim "earlier" without evidence. There's no baseline to compare against.</td>
+      <td><strong>Detection lead-time</strong>: <code>Outbreak.detected_at</code> vs the first lab-confirmed case in the zone. Plus the LSD-2022 replay (innovation C).</td></tr>
+    <tr><td class="req">Improved vaccination coverage</td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>An overall 12-month coverage % is shown (main.py:538), and camps can be scheduled.</td>
+      <td><strong>Coverage vs target per village</strong>, due and overdue (defaulter) lists, and coverage gained per camp.</td></tr>
+    <tr><td class="req">Faster treatment and containment</td><td class="st"><span class="pill gap">NOT MET</span></td>
+      <td>The timestamps exist (<code>reported_at</code>, <code>collected_at</code>, <code>result_at</code>, <code>Task.done_at</code>), but no durations are computed.</td>
+      <td><strong>Report → first vet action</strong>, measured against Maharashtra's own <em>1-hour callback norm</em>. Sample → result turnaround. Cluster → ring vaccination.</td></tr>
+    <tr><td class="req">Lower mortality and productivity loss</td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>Deaths in the last 7 days are counted (main.py:527), with no rate and no trend.</td>
+      <td><strong>Case-fatality rate by disease</strong>, deaths per 1,000 animals, and an estimated ₹ milk loss per outbreak.</td></tr>
+    <tr><td class="req">Stronger evidence-based planning</td><td class="st"><span class="pill met">MET</span></td>
+      <td>SITREP, the what-if ring-vaccination forecast, historical trends and CSV exports.</td>
+      <td>Already demoable. Add "decisions taken from this SITREP" to close the loop.</td></tr>
+  </table>
+  <div class="callout" style="margin-top:3.5mm"><div class="t">Found in the code: a KPI we promised ourselves and never built</div>
+  <code>main.py:539</code> has the comment <code># median report->awareness lag in hours (reported_at vs onset)</code> directly above the return statement. The metric was
+  never implemented. It's the first outcome in the PS, and we'd already planned to build it.</div>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>5 / 12</span></div>
+</section>
+
+<!-- ================= 6 · PROBLEM DESCRIPTION ================= -->
+<section class="page">
+  <div class="top"><span class="sec">04 · Problem Description</span><span class="crumb">The pain points the PS names, one by one</span></div>
+  <h2>Every pain point is addressed. None is fully closed except two.</h2>
+  <table>
+    <tr><th style="width:24%">Pain point named in the PS</th><th style="width:8%">Status</th><th style="width:36%">How we address it today</th><th style="width:32%">What would close it</th></tr>
+    <tr><td class="req">No real-time risk view at <u>village, block and district</u> level</td><td class="st"><span class="pill met">MET</span></td>
+      <td>LGD-coded village → block → district hierarchy. Drill-down, risk bands and live sync across dashboards.</td><td>Already strong. Keep it as a headline in the demo.</td></tr>
+    <tr><td class="req">Symptoms reported <u>late</u></td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>Voice, icons and offline queueing all lower the friction of reporting.</td><td>Prove it: measure the onset → report delay (outcome 1).</td></tr>
+    <tr><td class="req">Diagnostic facilities are <u>distant</u></td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>MVU dispatch tasks are auto-created for each cluster.</td><td>Nearest-lab and polyclinic routing, sample transport, a turnaround-time clock.</td></tr>
+    <tr><td class="req">Vaccination and treatment histories <u>incomplete</u></td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>Full history for animals registered in <em>our</em> app.</td><td>Pull histories from Bharat Pashudhan by Pashu Aadhaar, so we complete the record instead of starting a new one.</td></tr>
+    <tr><td class="req">Information from <u>farms, dispensaries, labs, vaccination drives and surveillance programmes</u> is fragmented</td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>Unified, but only for data typed into our app. There's no dispensary entity and no connector to 1962, NDLM or NADRES.</td>
+      <td><strong>This is the core complaint of the PS.</strong> Build the 1962 Signal Bridge (innovation A) plus a dispensary OPD import.</td></tr>
+    <tr><td class="req">Risk of <u>zoonotic</u> transmission</td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>A One Health flag on anthrax, rabies, brucellosis and avian-flu clusters, plus an alert to <code>target_role="health"</code>.</td>
+      <td>No user can hold a <code>health</code> role, so nobody in public health ever reads the alert. Add a One Health desk (innovation H).</td></tr>
+    <tr><td class="req">Mortality and productivity loss hit <u>farmers' incomes</u></td><td class="st"><span class="pill met">MET</span></td>
+      <td>Compensation-claim loop (report → claim → officer approval → farmer sees it). Withdrawal alerts protect milk sales.</td><td>Add DBT payout status and ₹ loss estimates.</td></tr>
+    <tr><td class="req">Must work in <u>low-connectivity</u> areas</td><td class="st"><span class="pill part">PARTLY</span></td>
+      <td>Offline-first PWA with a sync queue.</td><td>A real phone channel (missed call, IVR, SMS) for farmers with feature phones.</td></tr>
+  </table>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>6 / 12</span></div>
+</section>
+
+<!-- ================= 7 · ECOSYSTEM ================= -->
+<section class="page">
+  <div class="top"><span class="sec">05 · What Maharashtra already runs</span><span class="crumb">The judges built or use these systems</span></div>
+  <h2>Don't compete with 1962 and Bharat Pashudhan. Sit on top of them.</h2>
+  <div style="display:grid;grid-template-columns:1.62fr 1fr;gap:6mm;">
+    <table>
+      <tr><th style="width:22%">Existing system</th><th style="width:36%">What it already does</th><th style="width:20%">Overlaps with us</th><th>Where we must differ</th></tr>
+      <tr><td class="req">1962 helpline + MVUs<small>Maharashtra AHD + BFIL · CM Animal Health Scheme</small></td>
+        <td>Call centre at the AH Commissionerate, Pune. A vet must call the owner <strong>within 1 hour</strong>. 800,000+ animals treated in 5 years. DAHD's scheme page also <em>describes</em> matching symptoms against 108 diseases to set dispatch priority. <strong>Unconfirmed:</strong> we can't see the call-centre software. Don't cite it.</td>
+        <td>MVU dispatch</td>
+        <td>It handles <strong>one animal at a time</strong>. Nothing we found aggregates those calls into clusters. <strong>We ingest them.</strong></td></tr>
+      <tr><td class="req">Bharat Pashudhan / NDLM<small>DAHD + NDDB · 1962 Farmer App</small></td>
+        <td>12-digit <strong>Pashu Aadhaar</strong> ear tag. Records of vaccination, treatment, breeding and tests for <strong>tagged</strong> animals, where staff entered them. Farmer app (checked by our team): home remedies for some diseases, no disease classification.</td>
+        <td>Our animal registry, passport, vaccination records</td>
+        <td><strong>Read</strong> from it by Pashu Aadhaar. Never ask a farmer to register an animal twice.</td></tr>
+      <tr><td class="req">NADRES v2<small>ICAR-NIVEDI, Bengaluru</small></td>
+        <td>AI forecasts for 13 economically important diseases, at <strong>district</strong> level, as monthly bulletins using GIS, weather and remote-sensing layers.</td>
+        <td>Our forecast and risk map</td>
+        <td>Ours is <strong>village-level and case-driven</strong>, and updates with every report. Use NADRES as a prior in our risk score.</td></tr>
+      <tr><td class="req">WhatsApp chatbot<small>AHD + BFIL</small></td>
+        <td>Disease information, vaccination schedules, video consultations. In Raigad: 615 farmers used it and 201 video consultations were held (Oct 2025 – May 2026).</td>
+        <td>पशु मित्र assistant</td>
+        <td>Voice-first in Hindi and Marathi, grounded in <strong>live local</strong> outbreak data, and it <strong>acts</strong>: it files the report itself.</td></tr>
+    </table>
+
+    <div>
+      <div class="stack">
+        <div class="layer out"><span class="lbl">Action</span><span class="body">Advisories to the zone · ring vaccination · movement permits · compensation · SITREP</span></div>
+        <div class="arrow">▲</div>
+        <div class="layer us"><span class="lbl">PashuAarogya</span><span class="body"><strong>The surveillance brain.</strong> Cluster detection, risk, forecast, tasks and outcome KPIs, across <em>all</em> sources</span></div>
+        <div class="arrow">▲ ▲ ▲</div>
+        <div class="layer src"><span class="lbl">Signals in</span><span class="body">1962 call tickets · Bharat Pashudhan treatments and vaccinations · lab results · dispensary OPD · farmer and field-worker reports · NADRES forecasts</span></div>
+      </div>
+      <div class="note" style="margin-top:4mm"><strong>Why this wins.</strong> The PS complains that information "may remain fragmented".
+      A new standalone app adds one more fragment. A layer that <em>joins</em> the existing systems is the only answer that doesn't
+      make the problem worse. It's also the only story in which the department doesn't have to retrain 1962 staff.</div>
+      <div class="callout" style="margin-top:3mm;font-size:8.4pt"><div class="t">Honest risk</div>
+      The adapters can be demoed with CSV and mock APIs, but live access to 1962 or NDLM data needs a government MoU. Say that openly, as a Phase 1 dependency.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Sources: dahd.maharashtra.gov.in · bharatpashudhan.ndlm.co.in · nivedi.res.in · freepressjournal.in (2 Jun 2026). Full list on page 12.</span><span>7 / 12</span></div>
+</section>
+
+<!-- ================= 8 · STRENGTHS ================= -->
+<section class="page">
+  <div class="top"><span class="sec">06 · Keep and showcase</span><span class="crumb">What already goes beyond the PS</span></div>
+  <h2>Ten things we should lead the demo with, because nobody else will have them</h2>
+  <div class="cols2">
+    <table>
+      <tr><th style="width:36%">Strength</th><th>Why it lands with judges</th></tr>
+      <tr><td class="req">Space-time scan statistic</td><td>A peer-reviewed epidemiology method with a <strong>p-value</strong>. It turns "we think" into "p = 0.003".</td></tr>
+      <tr><td class="req">What-if ring vaccination</td><td>SEIR model on the village graph. Shows "cases prevented" and doses needed, which is exactly the planning the PS asks for.</td></tr>
+      <tr><td class="req">Reporting pays</td><td>Report → claim → approval. It fixes the <em>incentive</em> behind under-reporting, not just the interface.</td></tr>
+      <tr><td class="req">Explainable risk score</td><td>Tap a village to see why it's high: burden, growth, history, vaccination gap, cluster, weather.</td></tr>
+      <tr><td class="req">Food-safety withdrawal</td><td>Milk/meat withdrawal countdown after treatment, in three languages. Links animal health to human health.</td></tr>
+    </table>
+    <table>
+      <tr><th style="width:36%">Strength</th><th>Why it lands with judges</th></tr>
+      <tr><td class="req">Movement permit + passport</td><td>Scan a QR code and see "BLOCKED: inside LSD zone". Containment enforced at the checkpost.</td></tr>
+      <tr><td class="req">Offline queue with dedup</td><td>Switch to airplane mode, file a report, and it syncs once. Each report has a UUID, so nothing is counted twice.</td></tr>
+      <tr><td class="req">Grounded voice assistant</td><td>The rules layer answers instantly offline. Gemini handles free-form Hindi and Marathi. It never gives a diagnosis or a drug dose.</td></tr>
+      <tr><td class="req">Auto SITREP</td><td>The morning one-pager a District Animal Husbandry Officer would otherwise compile by hand.</td></tr>
+      <tr><td class="req">Hot-reload knowledge base</td><td>"Add a disease" is 20 lines of YAML and one click. The department owns the rules, not us.</td></tr>
+    </table>
+  </div>
+  <div class="note" style="margin-top:4mm"><strong>About Pashu Lens (breed ID).</strong> It's impressive, but <strong>breed identification isn't in the PS</strong>. If we lead with it, a
+  department judge may ask "how does breed ID detect disease?" Present it second: it speeds up registration and enables breed-wise risk analysis.
+  Point out that the same vision pipeline could be retrained for <em>lesion screening</em> (innovation J), which <em>is</em> in scope.</div>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>8 / 12</span></div>
+</section>
+
+<!-- ================= 9 · INNOVATIONS A–F ================= -->
+<section class="page">
+  <div class="top"><span class="sec">07 · Innovation and uniqueness to add (1 of 2)</span><span class="crumb">Each one is tied to a line in the PS</span></div>
+  <h2>Six additions that turn "partly met" into a wow moment</h2>
+  <div class="inno">
+    <div class="card top"><div class="hd"><span class="id">A</span><span class="nm">1962 Signal Bridge</span></div>
+      <p>Import 1962 call-centre tickets and Bharat Pashudhan treatment records as a surveillance feed. Every call becomes a data point on the radar. Match animals by Pashu Aadhaar.</p>
+      <div class="demo"><b>DEMO ▸</b> Upload a CSV of 30 "routine" 1962 calls. The radar lights up a cluster that nobody had noticed.</div>
+      <div class="meta"><span class="ps">PS: fragmented information</span><span>Effort M</span><span class="stars">★★★</span></div></div>
+    <div class="card top"><div class="hd"><span class="id">B</span><span class="nm">Outcome Scoreboard</span></div>
+      <p>Live KPIs for all six PS outcomes: onset → report, report → vet contact (against the state's 1-hour norm), lab turnaround, detection lead-time, coverage vs target, case-fatality rate. Includes a per-block league table.</p>
+      <div class="demo"><b>DEMO ▸</b> Each PS outcome gets a live number and a trend, e.g. <em>"median reporting delay: X days, down from Y"</em>. Illustrative wording only, never quote invented figures.</div>
+      <div class="meta"><span class="ps">PS: expected outcomes</span><span>Effort S–M</span><span class="stars">★★★</span></div></div>
+    <div class="card top"><div class="hd"><span class="id">C</span><span class="nm">LSD-2022 Replay</span></div>
+      <p>Replay Maharashtra's real 2022 lumpy skin disease timeline through our radar. Officially reported deaths climbed from <strong>126</strong> (18 Sep 2022) to about <strong>34,700</strong>. Show when our scan would have raised the alarm.</p>
+      <div class="demo"><b>DEMO ▸</b> A time-slider over Jalgaon, Ahmednagar, Akola and Pune: "flagged N days before the official count."</div>
+      <div class="meta"><span class="ps">PS: earlier identification</span><span>Effort M</span><span class="stars">★★★</span></div></div>
+    <div class="card"><div class="hd"><span class="id">D</span><span class="nm">Missed-call reporting</span></div>
+      <p>A farmer gives a missed call to one number and gets a free callback in a Marathi IVR, and a case is filed. Also accept structured SMS such as <code>LSD 3 1</code> (disease, sick, dead). Works on any feature phone.</p>
+      <div class="demo"><b>DEMO ▸</b> A judge gives a missed call from their own phone. The case appears on the dashboard.</div>
+      <div class="meta"><span class="ps">PS: IVR, low connectivity</span><span>Effort M</span><span class="stars">★★★</span></div></div>
+    <div class="card"><div class="hd"><span class="id">E</span><span class="nm">Zone broadcast + acknowledgement</span></div>
+      <p>When a cluster is detected, every household in the risk zone gets an SMS or voice call in its own language: "Press 1 once you've isolated or vaccinated." The map then shows compliance, not just risk.</p>
+      <div class="demo"><b>DEMO ▸</b> Villages turn from red to green as farmers acknowledge.</div>
+      <div class="meta"><span class="ps">PS: advisories, containment</span><span>Effort M</span><span class="stars">★★</span></div></div>
+    <div class="card"><div class="hd"><span class="id">F</span><span class="nm">Herd mode + mass-mortality trigger</span></div>
+      <p>Flock and herd records for poultry and goats. If at least X% of a flock dies within 48 hours, the case auto-escalates as suspected avian flu: biosecurity protocol, BSL-3 lab routing and a One Health notice.</p>
+      <div class="demo"><b>DEMO ▸</b> Report "40 of 300 birds dead". The whole zoonotic chain fires in one step.</div>
+      <div class="meta"><span class="ps">PS: herd records, mortality</span><span>Effort M</span><span class="stars">★★</span></div></div>
+  </div>
+  <div class="foot"><span>★★★ = high judge impact · Effort S ≈ 1 day · M ≈ 2–4 days · L ≈ 1 week+ for one developer</span><span>9 / 12</span></div>
+</section>
+
+<!-- ================= 10 · INNOVATIONS G–J ================= -->
+<section class="page">
+  <div class="top"><span class="sec">07 · Innovation and uniqueness to add (2 of 2)</span><span class="crumb">Depth and stretch goals</span></div>
+  <h2>Four more that deepen our coverage of the PS</h2>
+  <div class="inno" style="grid-template-columns:repeat(2,1fr);">
+    <div class="card"><div class="hd"><span class="id">G</span><span class="nm">Smart lab referral</span></div>
+      <p>A lab directory (district lab → regional lab → national BSL-3). Route each sample by suspected disease and distance, with a checklist for sample type and cold chain, and a turnaround-time clock that escalates if the result is late.</p>
+      <div class="demo"><b>DEMO ▸</b> A suspected avian-flu sample is auto-routed to the national BSL-3 lab, with a packing checklist and an ETA.</div>
+      <div class="meta"><span class="ps">PS: laboratory referral</span><span>Effort S–M</span><span class="stars">★★</span></div></div>
+    <div class="card"><div class="hd"><span class="id">H</span><span class="nm">One Health desk</span></div>
+      <p>A real login for the district health officer (IDSP), who receives zoonotic notices with an acknowledgement deadline and can report human cases back. Today our <code>health</code> alerts go to a role that no user can have.</p>
+      <div class="demo"><b>DEMO ▸</b> An anthrax cluster in cattle leads the health officer to acknowledge and schedule a human-surveillance visit.</div>
+      <div class="meta"><span class="ps">PS: zoonotic risk</span><span>Effort S</span><span class="stars">★★</span></div></div>
+    <div class="card"><div class="hd"><span class="id">I</span><span class="nm">Vaccination gap map + defaulter tracing</span></div>
+      <p>Show coverage against a herd-immunity target for each village. Give field workers due and overdue lists, and send reminders automatically. Ring-vaccination plan → camp → coverage gained, measured end to end.</p>
+      <div class="demo"><b>DEMO ▸</b> e.g. <em>"This village is at N% against a 70% target: M animals due. Camp booked, reminders sent."</em></div>
+      <div class="meta"><span class="ps">PS: vaccination coverage</span><span>Effort M</span><span class="stars">★★</span></div></div>
+    <div class="card"><div class="hd"><span class="id">J</span><span class="nm">Lesion-photo screening <span style="font-weight:500;color:var(--muted)">(stretch)</span></span></div>
+      <p>Retrain the existing Pashu Lens pipeline to spot skin and mouth lesions: LSD nodules, FMD vesicles. The output raises suspicion only and a vet confirms. The risk is getting enough labelled images; frame it as a research track.</p>
+      <div class="demo"><b>DEMO ▸</b> A photo of a nodular cow → "LSD suspicion ↑, confirmation needed", with the triage band raised.</div>
+      <div class="meta"><span class="ps">PS: AI-assisted triage</span><span>Effort L</span><span class="stars">★★★ wow / ⚠ risk</span></div></div>
+  </div>
+  <div class="note" style="margin-top:4mm"><strong>How to pick.</strong> A, B and C are the three that change the judges' verdict: they answer <em>"is it new?"</em>, <em>"does it work?"</em> and
+  <em>"can you prove it?"</em>. D is the most memorable live moment. The rest deepen coverage. If time is short, build A–D and describe E–J on a slide.</div>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis</span><span>10 / 12</span></div>
+</section>
+
+<!-- ================= 11 · ACTION PLAN ================= -->
+<section class="page">
+  <div class="top"><span class="sec">08 · Who does what</span><span class="crumb">Fill in the owner column at the next team meeting</span></div>
+  <h2>Work plan: fix the cheap gaps first, then build the differentiators</h2>
+  <table>
+    <tr><th style="width:5%">Prio</th><th style="width:28%">Task</th><th style="width:25%">Where in the code</th><th style="width:6%">Effort</th><th style="width:25%">Done when…</th><th style="width:11%">Owner</th></tr>
+    <tr><td><span class="prio p0">P0</span></td><td><strong>Onset-date picker</strong> + reporting-delay KPI</td><td><code>farmer.js</code> report form · <code>ReportIn</code> + main.py:308</td><td>S</td><td>A new report stores the real onset date and the delay shows on the dashboard</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p0">P0</span></td><td><strong>Send advisories to the whole zone</strong> (bug)</td><td><code>engine.py:235-241</code> → loop over <code>zone_village_ids</code></td><td>S</td><td>Every village in the cluster radius gets the advisory</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p0">P0</span></td><td><strong>Outcome Scoreboard</strong> (innovation B)</td><td><code>main.py:518</code> summary · new tab in <code>gov.js</code></td><td>M</td><td>All 6 PS outcomes show a number and a trend</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p0">P0</span></td><td><strong>Rewrite the pitch</strong>: "layer on top of 1962 / Bharat Pashudhan"</td><td>Slides, <code>README.md</code>, login page tagline</td><td>S</td><td>Every teammate can say the sentence on page 2 from memory</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p0">P0</span></td><td><strong>One-tap death report</strong></td><td><code>farmer.js</code> · triage already handles <code>dead_count</code></td><td>S</td><td>A death is reported in 2 taps and triaged as high</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p1">P1</span></td><td><strong>1962 Signal Bridge</strong> (A)</td><td>new <code>backend/integrations.py</code> · CSV + mock API</td><td>M</td><td>Imported tickets appear as cases and can form a cluster</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p1">P1</span></td><td><strong>LSD-2022 Replay</strong> (C)</td><td>new replay script + time slider on the radar</td><td>M</td><td>Slide: "flagged N days before the official count"</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p1">P1</span></td><td><strong>Missed call / IVR / SMS</strong> (D)</td><td>gateway webhook in <code>main.py</code> · reuse <code>/api/reports</code></td><td>M</td><td>A real phone call files a real case</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p1">P1</span></td><td><strong>Herd mode + mortality trigger</strong> (F)</td><td><code>models.py</code> Herd · <code>engine.py</code> rule</td><td>M</td><td>A mass poultry death fires the One Health chain</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p1">P1</span></td><td><strong>Lab directory + turnaround time</strong> (G), <strong>One Health desk</strong> (H)</td><td><code>models.py</code> Sample.lab_id · new <code>health</code> role</td><td>M</td><td>Samples route by disease, and the health officer can log in</td><td><span class="owner"></span></td></tr>
+    <tr><td><span class="prio p2">P2</span></td><td>Grow the KB toward the full notifiable list · automated tests for triage and scan · real OTP and a DPDP-Act privacy note</td><td><code>rules/diseases.yaml</code> · new <code>tests/</code></td><td>L</td><td>≥ 40 diseases · a CI badge · consent screen</td><td><span class="owner"></span></td></tr>
+  </table>
+  <div class="foot"><span>P0 = before the next review · P1 = before the finale · P2 = if time allows</span><span>11 / 12</span></div>
+</section>
+
+<!-- ================= 12 · Q&A + SOURCES ================= -->
+<section class="page">
+  <div class="top"><span class="sec">09 · Judge Q&amp;A prep, and sources</span><span class="crumb">Rehearse these answers</span></div>
+  <h2>The questions a department judge will ask, and how to answer them</h2>
+  <div style="display:grid;grid-template-columns:1.9fr 1fr;gap:6mm;">
+    <table class="qa">
+      <tr><th style="width:27%">Likely question</th><th style="width:28%">Risky answer today</th><th>Strong answer (after the fixes)</th></tr>
+      <tr><td class="q">"We already have 1962 and Bharat Pashudhan. Why yours?"</td><td class="weak">"Ours has more features."</td>
+        <td class="strong">"They treat one animal at a time. We're the layer that turns their records into village-level early warning, and we read their data by Pashu Aadhaar."</td></tr>
+      <tr><td class="q">"How do you know reporting time goes down?"</td><td class="weak">We can't: onset isn't captured.</td>
+        <td class="strong">Show the median onset → report KPI on the Outcome Scoreboard.</td></tr>
+      <tr><td class="q">"Is this data real?"</td><td class="weak">"Yes." (It's synthetic. Never say this.)</td>
+        <td class="strong">"It's synthetic, shaped like a real LSD wave. Here's our replay on the public Maharashtra 2022 timeline."</td></tr>
+      <tr><td class="q">"How accurate is the triage?"</td><td class="weak">A percentage we never measured.</td>
+        <td class="strong">"Triage only routes, it never diagnoses. A vet confirms every case, and the confirmation rate is tracked. The department edits the rules."</td></tr>
+      <tr><td class="q">"What about a farmer with no smartphone?"</td><td class="weak">"The IVR page" (a simulator).</td>
+        <td class="strong">A live missed call from the judge's phone, plus SMS codes and field-worker proxy reporting.</td></tr>
+      <tr><td class="q">"Why breed identification?"</td><td class="weak">Leading with it as the main AI.</td>
+        <td class="strong">"It speeds up registration. The same pipeline is being retrained for lesion screening."</td></tr>
+      <tr><td class="q">"Privacy? Who owns the data?"</td><td class="weak">No answer prepared.</td>
+        <td class="strong">"Consent at sign-up under the DPDP Act, role-scoped access, minimal personal data. The department owns the data."</td></tr>
+    </table>
+    <div>
+      <div class="box" style="border-top:3pt solid var(--ink)"><h3>Sources</h3>
+      <ul class="src">
+        <li>Maharashtra DAHD: Chief Minister Animal Health Scheme (1-hour callback, Pune call centre; 108-disease matching described but unverified): <a href="https://dahd.maharashtra.gov.in/en/scheme/chief-minister-animal-health-scheme/">dahd.maharashtra.gov.in</a></li>
+        <li>Free Press Journal, 2 Jun 2026: 1962 helpline and WhatsApp chatbot in Raigad: <a href="https://www.freepressjournal.in/mumbai/raigad-administration-urges-farmers-to-use-1962-veterinary-helpline-whatsapp-chatbot-for-livestock-healthcare">freepressjournal.in</a></li>
+        <li>Bharat Pashudhan / NDLM overview: <a href="https://olrds.odisha.gov.in/en/ndlm/">olrds.odisha.gov.in/en/ndlm</a> · 1962 Farmer App: <a href="https://play.google.com/store/apps/details?id=com.farmerpashudhan.production">Google Play</a></li>
+        <li>ICAR-NIVEDI NADRES v2: <a href="https://nivedi.res.in/Nadres_v2/">nivedi.res.in/Nadres_v2</a></li>
+        <li>LSD in Maharashtra 2022 (126 deaths, 18 Sep): <a href="https://www.indiatvnews.com/news/india/lumpy-skin-disease-maharashtra-cattle-death-toll-lumpy-virus-2022-09-18-809223">indiatvnews.com</a> · cumulative toll: <a href="https://en.wikipedia.org/wiki/Lumpy_skin_disease_outbreak_in_India">Wikipedia</a></li>
+        <li>SIH judging criteria (novelty, feasibility, impact, UX, scalability): <a href="https://whereuelevate.com/blogs/smart-india-hackathon-2026">whereuelevate.com</a></li>
+      </ul></div>
+      <div class="note" style="margin-top:3mm;font-size:8.2pt"><strong>Method.</strong> A code audit of the repository at <code>a63324a</code>. Each status is traced to a file and line.
+      The 22 PS items are: 8 capabilities, 6 outcomes and 8 pain points. Weighted coverage counts Met as 1 and Partly as ½.</div>
+    </div>
+  </div>
+  <div class="foot"><span>PashuAarogya · PS 26128 gap analysis · for internal team use</span><span>12 / 12</span></div>
+</section>
+
+</body></html>

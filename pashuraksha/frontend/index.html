@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1B4C8C">
+<link rel="apple-touch-icon" href="/icons/apple-180.png?v=9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png?v=9">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PashuAarogya AI</title>
+<link rel="stylesheet" href="/css/app.css?v=9">
+<style>
+body{background:var(--paper)}
+.gtop{background:#fff;border-bottom:1px solid var(--hair)}
+.gtop .tricolor{height:5px;background:linear-gradient(90deg,#F4801F 33%,#FFF 33% 66%,#1E7A46 66%);
+  border-bottom:1px solid var(--hair)}
+.gtop .inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:15px;padding:13px 22px}
+.embl{width:54px;height:54px;border-radius:50%;flex:0 0 54px;display:flex;align-items:center;
+  justify-content:center;font-size:29px;background:#fff;border:2.5px solid var(--saffron);
+  box-shadow:0 2px 10px rgba(232,114,12,.25)}
+.gtop h1{font-family:var(--f-d);font-weight:700;font-size:23px;margin:0;color:var(--navy);line-height:1.05}
+.gtop h1 .mr{color:var(--saffron)}
+.gtop .sub{font-size:12px;color:var(--muted)}
+.pill{margin-left:auto;font-family:var(--f-m);font-size:10.5px;letter-spacing:.08em;
+  color:var(--navy);background:var(--navy-soft);border:1px solid #C7D6EC;padding:5px 14px;border-radius:99px}
+
+.hero{max-width:1240px;margin:0 auto;padding:52px 24px 8px;text-align:center}
+.eyebrow{font-family:var(--f-m);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--saffron);font-weight:600;margin-bottom:16px}
+.hero h2{font-family:var(--f-d);font-weight:700;font-size:clamp(30px,4.8vw,50px);
+  line-height:1.08;margin:0 auto 16px;max-width:860px;color:var(--ink)}
+.hero h2 .hl{color:var(--navy)}
+.hero p{color:var(--muted);font-size:16.5px;max-width:660px;margin:0 auto;line-height:1.6}
+.hero p b{color:var(--ink)}
+
+.loop{display:flex;justify-content:center;margin:30px auto 6px;flex-wrap:wrap;
+  font-family:var(--f-m);font-size:10.5px}
+.loop span{display:flex;align-items:center;margin:3px 0}
+.loop b{color:var(--navy);background:#fff;border:1px solid var(--hair);
+  padding:6px 12px;border-radius:8px;font-weight:600;white-space:nowrap;
+  box-shadow:0 1px 3px rgba(28,36,52,.06)}
+.loop i{margin:0 6px;color:var(--saffron);font-style:normal;font-weight:700}
+
+.stats{display:flex;justify-content:center;gap:44px;margin:32px auto 0;flex-wrap:wrap}
+.stat .v{font-family:var(--f-d);font-weight:700;font-size:36px;font-variant-numeric:tabular-nums}
+.stat .v.c1{color:var(--saffron)}.stat .v.c2{color:var(--navy)}
+.stat .v.c3{color:var(--green)}.stat .v.c4{color:var(--red)}
+.stat .l{font-family:var(--f-m);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin-top:3px}
+
+.rw{max-width:1240px;margin:40px auto 0;padding:0 24px}
+.rlabel{font-family:var(--f-m);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.rlabel::before,.rlabel::after{content:'';flex:1;height:1px;background:var(--hair)}
+.rolegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px}
+.rolecard{background:#fff;border:1.5px solid var(--hair);border-radius:15px;padding:20px;
+  text-align:left;cursor:pointer;
+  box-shadow:0 1px 3px rgba(28,36,52,.05),0 10px 24px -16px rgba(28,36,52,.15)}
+.rolecard:hover{border-color:var(--saffron);transform:translateY(-3px);
+  box-shadow:0 4px 8px rgba(232,114,12,.08),0 18px 36px -14px rgba(232,114,12,.25)}
+.rolecard .em{font-size:31px}
+.rolecard .nm{font-family:var(--f-d);font-weight:700;font-size:16.5px;margin-top:9px;color:var(--ink)}
+.rolecard .ds{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+.rolecard .ph{font-family:var(--f-m);font-size:10.5px;color:var(--chakra);margin-top:10px}
+
+.login-box{max-width:420px;margin:38px auto 0;background:#fff;border:1px solid var(--hair);
+  border-radius:16px;padding:26px;box-shadow:0 2px 6px rgba(28,36,52,.06),
+  0 18px 40px -20px rgba(28,36,52,.2)}
+.login-box h3{font-family:var(--f-d);font-size:14px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--navy);margin:0 0 14px;display:flex;gap:8px;align-items:center}
+.login-box h3::before{content:'';width:7px;height:7px;border-radius:2px;background:var(--saffron)}
+.btn-go{width:100%;padding:13px;border:0;border-radius:10px;font-family:var(--f-b);
+  font-weight:700;font-size:15px;color:#fff;cursor:pointer;background:var(--saffron);
+  box-shadow:0 8px 22px -8px rgba(232,114,12,.5);transition:filter .15s}
+.btn-go:hover{filter:brightness(1.08)}
+.btn-go.green{background:var(--green);box-shadow:0 8px 22px -8px rgba(30,122,70,.45)}
+
+footer.lite{border-top:1px solid var(--hair);margin-top:56px;padding:20px;text-align:center;
+  font-size:11.5px;color:var(--muted);line-height:1.6;background:#fff}
+
+/* innovations */
+.inno{max-width:1240px;margin:44px auto 0;padding:0 24px}
+.innogrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.ino{background:#fff;border:1px solid var(--hair);border-radius:16px;padding:20px 20px 18px;position:relative;
+  overflow:hidden;box-shadow:0 1px 3px rgba(28,36,52,.05),0 12px 28px -18px rgba(28,36,52,.18)}
+.ino::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--saffron)}
+.ino:nth-child(2n)::before{background:var(--navy)}
+.ino:nth-child(3n)::before{background:var(--green)}
+.ino .k{font-family:var(--f-m);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.ino .em{font-size:30px;line-height:1}
+.ino h4{font-family:var(--f-d);font-size:19px;margin:8px 0 6px;color:var(--ink);letter-spacing:.01em}
+.ino p{font-size:13.5px;color:var(--muted);line-height:1.5;margin:0}
+.ino p b{color:var(--ink)}
+.ino .tag{position:absolute;right:14px;top:14px;font-family:var(--f-m);font-size:9.5px;letter-spacing:.08em;
+  color:var(--green);background:var(--green-soft);padding:3px 8px;border-radius:99px;font-weight:600}
+</style>
+</head>
+<body>
+<header class="gtop">
+  <div class="tricolor"></div>
+  <div class="inner">
+    <div class="embl"><img src="/icons/logo-mark.png?v=9" alt="Pashu Aarogya" onerror="this.parentNode.textContent='🐄'"></div>
+    <div>
+      <h1><span class="mr">पशुआरोग्य</span> · PashuAarogya AI</h1>
+      <div class="sub">पशुपालन विभाग, महाराष्ट्र शासन · Dept. of Animal Husbandry &amp; Dairying, Govt. of Maharashtra</div>
+    </div>
+    <span class="pill">SIH · PS 26128</span>
+  </div>
+</header>
+<div id="netbar">⚠ Offline mode — reports will queue locally</div>
+
+<section class="hero">
+  <div class="brand-lockup">
+    <img src="/icons/icon-512.png?v=9" alt="Pashu Aarogya" width="132" height="132">
+    <div class="tag">Better Care. Healthier Livestock. Stronger Farmers.</div>
+  </div>
+  <div class="eyebrow">Early Warning · Rapid Reporting · Coordinated Response</div>
+  <h2>The disease travels fast.<br><span class="hl">Now the signal travels faster.</span></h2>
+  <p>One platform connecting <b>farmer → field worker → veterinarian → laboratory →
+     block / district / state</b> — turning village symptom reports into statistical outbreak
+     detection, explainable risk, vaccination campaigns and compensation.
+     Voice-first. Marathi-first. <b>Works offline.</b></p>
+  <div class="loop">
+    <span><b>REPORT</b><i>→</i></span><span><b>DETECT</b><i>→</i></span>
+    <span><b>EXPLAIN</b><i>→</i></span><span><b>ALERT</b><i>→</i></span>
+    <span><b>CONFIRM</b><i>→</i></span><span><b>RESPOND</b><i>→</i></span>
+    <span><b>COMPENSATE</b></span>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v c1" id="st-animals">0</div><div class="l">Animals registered</div></div>
+    <div class="stat"><div class="v c4" id="st-clusters">0</div><div class="l">Live detected clusters</div></div>
+    <div class="stat"><div class="v c2" id="st-cases">0</div><div class="l">Reports · last 7 days</div></div>
+    <div class="stat"><div class="v c3" id="st-vacc">0</div><div class="l">% vaccination coverage</div></div>
+  </div>
+</section>
+
+<section class="inno">
+  <div class="rlabel">What makes it different · सहा नवकल्पना</div>
+  <div class="innogrid">
+    <div class="ino"><span class="tag">REAL MODEL</span><div class="k">01 · Pashu Lens</div><div class="em">📸</div>
+      <h4>AI identifies the animal from a photo</h4>
+      <p>EfficientNetV2 trained on <b>50 Indian cattle &amp; buffalo breeds</b>, with a subject gate that refuses
+        non-animals and a quality gate that asks for a retake. Registration in one tap — aligned to
+        Bharat Pashudhan's image-based classification agenda.</p></div>
+    <div class="ino"><span class="tag">EPIDEMIOLOGY</span><div class="k">02 · Outbreak Radar</div><div class="em">📡</div>
+      <h4>Statistical cluster detection, not a dot map</h4>
+      <p>Space-time scan with Poisson p-values flags a village cluster <b>days before deaths pile up</b>, names the
+        suspected disease, raises One Health notices for zoonoses and auto-creates owned response tasks.</p></div>
+    <div class="ino"><span class="tag">PRESCRIPTIVE</span><div class="k">03 · What-if Planner</div><div class="em">🔮</div>
+      <h4>"Ring-vaccinate today → how many cases prevented?"</h4>
+      <p>A transparent SEIR model on the village graph animates the next 7 days and compares
+        <b>no action vs ring vaccination</b>, with doses needed — the decision a Collector actually has to make.</p></div>
+    <div class="ino"><span class="tag">CONTAINMENT</span><div class="k">04 · Health Passport + Movement Permit</div><div class="em">🪪</div>
+      <h4>A QR that stops a sick village selling into a clean one</h4>
+      <p>Every animal gets a scannable passport: vaccinations, treatments, <b>milk-withdrawal countdown</b> and a
+        live movement permit computed from the Radar — enforced at checkposts and markets.</p></div>
+    <div class="ino"><span class="tag">INCLUSION</span><div class="k">05 · Pashu Mitra voice</div><div class="em">🗣️</div>
+      <h4>Speak in Marathi. It answers in Marathi.</h4>
+      <p>Voice symptom capture, triage result and the advisory <b>read aloud</b>, IVR-1962 keypad path and an SMS
+        codec — a farmer who cannot read or has no data is still a first-class reporter.</p></div>
+    <div class="ino"><span class="tag">INCENTIVE</span><div class="k">06 · Reporting pays</div><div class="em">💰</div>
+      <h4>The case record is the compensation claim</h4>
+      <p>Farmers hide outbreaks because reporting triggers culling. Here a death report becomes a
+        <b>one-tap compensation claim</b> officers approve in the portal — earlier reporting, earlier detection.</p></div>
+  </div>
+</section>
+
+<div class="rw">
+  <div class="rlabel">Select a role to enter · सर्व डेमो लॉगिनसाठी OTP 123456</div>
+  <div class="rolegrid" id="roles"></div>
+  <div class="login-box">
+    <h3>Secure Login · सुरक्षित प्रवेश</h3>
+    <div id="step1">
+      <label class="muted" style="font-size:12.5px">Mobile number · मोबाइल क्रमांक</label>
+      <input id="phone" placeholder="90000000xx" inputmode="numeric" style="margin:6px 0 14px">
+      <button class="btn-go" onclick="sendOTP()">Send OTP →</button>
+    </div>
+    <div id="step2" style="display:none">
+      <label class="muted" style="font-size:12.5px">Enter OTP (demo: <b>123456</b>)</label>
+      <input id="otp" placeholder="••••••" inputmode="numeric" maxlength="6"
+             style="margin:6px 0 14px;letter-spacing:.45em;text-align:center;font-size:20px">
+      <button class="btn-go green" onclick="verifyOTP()">Verify &amp; enter →</button>
+    </div>
+    <!-- On-the-spot enrolment: a farmer standing in front of you gets an
+         account and is signed in, in one step. -->
+    <div id="stepReg" style="display:none">
+      <label class="muted" style="font-size:12.5px">Farmer's name · शेतकऱ्याचे नाव</label>
+      <input id="regName" placeholder="पूरा नाम" style="margin:6px 0 10px">
+      <label class="muted" style="font-size:12.5px">Mobile number · मोबाइल क्रमांक</label>
+      <input id="regPhone" placeholder="10-digit mobile" inputmode="numeric" maxlength="10"
+             style="margin:6px 0 10px">
+      <label class="muted" style="font-size:12.5px">Village · गाव</label>
+      <select id="regVillage" style="margin:6px 0 14px"></select>
+      <button class="btn-go green" onclick="registerFarmer()">Register &amp; enter →</button>
+      <div style="text-align:center;margin-top:10px">
+        <a href="#" onclick="showReg(false);return false" class="muted"
+           style="font-size:12.5px">← Back to login</a></div>
+    </div>
+    <div id="regLink" style="text-align:center;margin-top:12px;border-top:1px solid var(--hair);padding-top:12px">
+      <span class="muted" style="font-size:12.5px">New farmer? · नया किसान?</span>
+      <a href="#" onclick="showReg(true);return false"
+         style="font-size:13px;font-weight:600;margin-left:6px">🆕 Register here</a>
+    </div>
+  </div>
+  <div class="login-box" id="phoneBox" style="margin-top:16px;text-align:center;display:none">
+    <h3 style="justify-content:center">📱 Open on your phone · मोबाइल पर खोलें</h3>
+    <div id="qr" style="display:flex;justify-content:center;margin:6px 0 10px"></div>
+    <div class="mono" style="font-size:12px;color:var(--navy);word-break:break-all" id="lanurl"></div>
+    <div id="pubNote" class="muted" style="font-size:11.5px;margin-top:8px"></div>
+  </div>
+</div>
+
+<footer class="lite">पशुआरोग्य AI — Smart India Hackathon prototype · Problem Statement 26128 ·
+  Maharashtra State Innovation Society<br>
+  AI output is decision support only — diagnosis &amp; treatment remain with registered veterinary
+  practitioners · Farmer identity is never exposed on public maps</footer>
+
+<script src="/js/api.js?v=9"></script>
+<script>
+const ROLES = [
+  { em:'🧑‍🌾', nm:'Farmer · पशुपालक', ds:'Voice reporting in Marathi, compensation claims, camp alerts. Works fully offline.', ph:'9000000001' },
+  { em:'🩺', nm:'Veterinarian · पशुवैद्य', ds:'Triage-ranked queue, investigation, treatment, sample collection.', ph:'9000000003' },
+  { em:'🔬', nm:'Laboratory · प्रयोगशाळा', ds:'QR chain-of-custody, testing workflow, results auto-confirm cases.', ph:'9000000004' },
+  { em:'🚶', nm:'Field Worker · पशुमित्र', ds:'Village rounds, offline capture, verification tasks.', ph:'9000000002' },
+  { em:'🏢', nm:'Block Officer · तालुका अधिकारी', ds:'Action queue, clusters, camps and vaccination gaps for the block.', ph:'9000000005' },
+  { em:'🏛️', nm:'District / State · जिल्हा/राज्य', ds:'GIS surveillance, Outbreak Radar, claims processing, One Health.', ph:'9000000006' },
+];
+document.getElementById('roles').innerHTML = ROLES.map(r => `
+  <div class="rolecard" onclick="quick('${r.ph}')">
+    <div class="em">${r.em}</div><div class="nm">${r.nm}</div>
+    <div class="ds">${r.ds}</div><div class="ph">📱 ${r.ph}</div>
+  </div>`).join('');
+
+const DEST = { farmer:'/farmer.html', field:'/farmer.html', vet:'/vet.html',
+               lab:'/vet.html', block:'/gov.html', district:'/gov.html', state:'/gov.html' };
+function quick(ph) { document.getElementById('phone').value = ph; sendOTP(); }
+async function sendOTP() {
+  const phone = document.getElementById('phone').value.trim();
+  if (!phone) return toast('Enter a mobile number', 'err');
+  try {
+    await API.post('/api/auth/request-otp', { phone });
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    document.getElementById('otp').focus();
+    toast('OTP sent (demo: 123456)', 'ok');
+    document.querySelector('.login-box').scrollIntoView({ behavior:'smooth', block:'center' });
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function verifyOTP() {
+  const phone = document.getElementById('phone').value.trim();
+  const otp = document.getElementById('otp').value.trim();
+  try {
+    const r = await API.post('/api/auth/verify', { phone, otp });
+    API.setSession(r.token, r.user);
+    if (r.user.lang) try { localStorage.setItem('pr_lang', r.user.lang); } catch(e){}
+    location.href = DEST[r.user.role] || '/';
+  } catch (e) { toast(e.message, 'err'); }
+}
+document.getElementById('otp').addEventListener('keyup', e => { if (e.key === 'Enter') verifyOTP(); });
+
+/* ------------------------- on-the-spot farmer sign-up --------------------- */
+let VILLAGES = null;
+async function showReg(on) {
+  document.getElementById('step1').style.display = on ? 'none' : '';
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('stepReg').style.display = on ? '' : 'none';
+  document.getElementById('regLink').style.display = on ? 'none' : '';
+  if (!on || VILLAGES) return;
+  const sel = document.getElementById('regVillage');
+  sel.innerHTML = '<option>…</option>';
+  try {
+    const all = await API.get('/api/locations');
+    VILLAGES = all.filter(l => l.level === 'village');
+    sel.innerHTML = VILLAGES.map(v =>
+      `<option value="${v.id}">${v.name}${v.name_mr ? ' · ' + v.name_mr : ''}</option>`).join('');
+  } catch (e) { sel.innerHTML = '<option value="">(offline)</option>'; }
+}
+
+async function registerFarmer() {
+  const name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.replace(/\D/g, '');
+  const village_id = parseInt(document.getElementById('regVillage').value, 10) || null;
+  if (name.length < 2) return toast("Enter the farmer's name", 'err');
+  if (phone.length !== 10) return toast('Enter a 10-digit mobile number', 'err');
+  try {
+    const r = await API.post('/api/auth/register',
+      { name, phone, village_id, lang: localStorage.getItem('pr_lang') || 'hi' });
+    API.setSession(r.token, r.user);
+    toast(r.already ? 'Already registered — signing in' : '✅ Registered — welcome!', 'ok');
+    setTimeout(() => { location.href = DEST[r.user.role] || '/farmer.html'; }, 500);
+  } catch (e) { toast(e.message, 'err'); }
+}
+if (!navigator.onLine) netbar(true);
+
+function countTo(id, target) {
+  const elm = document.getElementById(id);
+  const t0 = performance.now(), dur = 1200;
+  function step(t) {
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    elm.textContent = Math.round(target * e).toLocaleString('en-IN');
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+(async () => {
+  try {
+    const s = await fetch('/api/dashboard/summary').then(r => r.json());
+    countTo('st-animals', s.total_animals); countTo('st-clusters', s.active_outbreaks);
+    countTo('st-cases', s.cases_7d); countTo('st-vacc', Math.round(s.vaccination_coverage * 100));
+  } catch (e) {
+    countTo('st-animals', 784); countTo('st-clusters', 4);
+    countTo('st-cases', 97); countTo('st-vacc', 71);
+  }
+})();
+
+/* LAN QR — lets a phone on the same Wi-Fi open + install the app */
+(async () => {
+  try {
+    const h = await fetch('/api/hostinfo').then(r => r.json());
+    const url = h.public_url || (h.urls && h.urls[0]);
+    if (!url) return;
+    document.getElementById('lanurl').textContent = (h.public_url ? '🌐 ' : '📶 ') + url;
+    document.getElementById('pubNote').innerHTML = h.public_url
+      ? `<b style="color:var(--green)">Public HTTPS link — works on mobile data, any network.</b>
+         First open shows a one-time ngrok “Visit Site” page — tap it. Then Chrome →
+         <b>“Add to Home screen”</b> to install as an app (voice &amp; camera enabled on HTTPS).`
+      : `Same Wi-Fi only. For a public link run <b>python tunnel.py</b> (or use run.bat) —
+         then this QR switches to an HTTPS address that works anywhere.`;
+    document.getElementById('phoneBox').style.display = 'block';
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.onload = () => new QRCode(document.getElementById('qr'),
+      { text: url, width: 148, height: 148, colorDark: '#123566' });
+    document.head.appendChild(s);
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

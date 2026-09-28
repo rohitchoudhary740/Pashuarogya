@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Pashudhan Gap — SIH Problem Statement Teardown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+<style>
+/* ============================ PRINT SETUP ============================ */
+@page { size: A4; margin: 15mm 14mm 15mm 14mm; }
+
+:root{
+  --ink:#14181F;
+  --muted:#55607A;
+  --hair:#C9CFDC;
+  --hair-lt:#E4E8F0;
+  --paper:#FFFFFF;
+  --tint:#F3F5F9;
+  --accent:#1B4FA8;        /* methylene blue */
+  --accent-soft:#E4EBF8;
+  --accent-2:#A8215F;      /* carbol fuchsin */
+  --accent-2-soft:#FAE6EF;
+  --ok:#1F6B42;  --ok-soft:#E4F1E9;
+  --warn:#8A5808; --warn-soft:#FBF1DE;
+  --crit:#A6362A; --crit-soft:#FBE8E5;
+  --f-display:"Archivo","Segoe UI",Arial,sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+}
+
+*{ box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+html,body{ background:var(--paper); }
+body{
+  font-family:var(--f-body);
+  font-size:10.2pt;
+  line-height:1.52;
+  color:var(--ink);
+  margin:0;
+}
+p{ margin:0 0 .62em; }
+strong,b{ font-weight:600; }
+em{ font-style:italic; }
+a{ color:var(--accent); text-decoration:none; }
+code{ font-family:var(--f-mono); font-size:.87em; background:var(--tint); padding:.05em .3em; border-radius:2px; }
+ul,ol{ margin:0 0 .7em; padding-left:1.15em; }
+li{ margin-bottom:.28em; }
+li::marker{ color:var(--accent); }
+ul.tight li, ol.tight li{ margin-bottom:.12em; }
+
+/* ============================ COVER ============================ */
+.cover{ break-after:page; padding-top:8mm; }
+.cover .rule-top{ border-top:3pt solid var(--ink); margin-bottom:6mm; }
+.kicker{
+  font-family:var(--f-mono); font-size:7.6pt; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 6mm;
+}
+.cover h1{
+  font-family:var(--f-display); font-weight:700; font-size:40pt; line-height:.96;
+  letter-spacing:-.028em; margin:0 0 5mm;
+}
+.cover .dek{
+  font-size:13pt; line-height:1.42; color:var(--muted); max-width:150mm; margin:0 0 8mm;
+}
+.cover .dek b{ color:var(--ink); }
+
+.ps-block{ border:1pt solid var(--hair); border-radius:2mm; overflow:hidden; margin-bottom:7mm; }
+.ps-block .hdr{
+  background:var(--ink); color:#fff; font-family:var(--f-mono); font-size:7.6pt;
+  letter-spacing:.16em; text-transform:uppercase; padding:2.6mm 5mm;
+}
+.ps-block .inner{ padding:5mm; }
+.ps-block .title{ font-family:var(--f-display); font-weight:700; font-size:12.5pt; line-height:1.3; margin:0 0 4mm; letter-spacing:-.01em; }
+.ps-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-top:1pt solid var(--hair-lt); padding-top:3.5mm; }
+.ps-grid div{ padding-right:4mm; }
+.ps-grid b{ display:block; font-family:var(--f-mono); font-size:6.8pt; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:1mm; }
+.ps-grid span{ font-size:9pt; font-weight:600; }
+
+.cover-verdict{
+  background:var(--ok-soft); border-left:4pt solid var(--ok); border-radius:0 2mm 2mm 0;
+  padding:5mm 6mm; margin-bottom:7mm;
+}
+.cover-verdict .lt{ font-family:var(--f-display); font-weight:700; font-size:14pt; color:var(--ok); margin:0 0 2mm; letter-spacing:-.01em; }
+.cover-verdict p{ margin:0; font-size:10.5pt; line-height:1.45; }
+
+.cover-foot{ border-top:1pt solid var(--hair); padding-top:3.5mm; font-family:var(--f-mono); font-size:7.6pt; color:var(--muted); display:flex; justify-content:space-between; }
+
+/* ============================ TOC ============================ */
+.toc-page{ break-after:page; }
+.toc-list{ border-top:1pt solid var(--ink); }
+.toc-list a{ display:flex; gap:5mm; align-items:baseline; padding:3.1mm 0; border-bottom:1pt solid var(--hair-lt); color:var(--ink); }
+.toc-list .n{ font-family:var(--f-mono); font-size:8.5pt; color:var(--accent-2); font-weight:600; width:9mm; flex:0 0 9mm; }
+.toc-list .t{ font-family:var(--f-display); font-weight:600; font-size:11pt; flex:0 0 78mm; letter-spacing:-.008em; }
+.toc-list .d{ font-size:9pt; color:var(--muted); flex:1; }
+
+/* ============================ SECTIONS ============================ */
+section{ break-before:page; }
+.shead{ border-bottom:2pt solid var(--ink); padding-bottom:2.5mm; margin-bottom:5mm; display:flex; align-items:baseline; gap:4mm; }
+.shead .num{ font-family:var(--f-mono); font-size:10pt; font-weight:600; color:var(--accent-2); }
+.shead h2{ font-family:var(--f-display); font-weight:700; font-size:19pt; letter-spacing:-.022em; margin:0; line-height:1.1; }
+
+h3{ font-family:var(--f-display); font-weight:600; font-size:12pt; letter-spacing:-.012em; margin:6mm 0 2.2mm; line-height:1.25; break-after:avoid; }
+h3 .q{ color:var(--accent); font-family:var(--f-mono); font-size:8pt; letter-spacing:.06em; display:block; font-weight:500; margin-bottom:1mm; text-transform:uppercase; }
+h4{ font-family:var(--f-mono); font-weight:600; font-size:7.8pt; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:5mm 0 2mm; break-after:avoid; }
+h2,h3,h4{ break-after:avoid; }
+
+/* ============================ TABLES ============================ */
+table{ border-collapse:collapse; width:100%; font-size:8.8pt; line-height:1.36; margin:3mm 0 4.5mm; }
+thead{ display:table-header-group; }
+th,td{ text-align:left; padding:2.1mm 2.6mm; border-bottom:.6pt solid var(--hair-lt); vertical-align:top; }
+thead th{
+  font-family:var(--f-mono); font-size:6.9pt; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; background:var(--tint); border-bottom:1pt solid var(--hair);
+}
+tbody tr{ break-inside:avoid; }
+tbody tr:last-child td{ border-bottom:1pt solid var(--hair); }
+td.tn{ font-family:var(--f-display); font-weight:600; font-size:8.8pt; }
+td.nm,th.nm{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+table.lined td{ border-bottom:.6pt solid var(--hair-lt); }
+
+/* ============================ CHIPS ============================ */
+.chip{
+  display:inline-block; font-family:var(--f-mono); font-size:6.6pt; font-weight:600;
+  letter-spacing:.07em; text-transform:uppercase; padding:.6mm 1.6mm; border-radius:1mm;
+  white-space:nowrap; line-height:1.5;
+}
+.chip.ok{ background:var(--ok-soft); color:var(--ok); }
+.chip.warn{ background:var(--warn-soft); color:var(--warn); }
+.chip.crit{ background:var(--crit-soft); color:var(--crit); }
+.chip.info{ background:var(--accent-soft); color:var(--accent); }
+.chip.mag{ background:var(--accent-2-soft); color:var(--accent-2); }
+
+/* ============================ CALLOUTS ============================ */
+.note{
+  border:.7pt solid var(--hair); border-left:3pt solid var(--accent);
+  background:var(--tint); padding:3.4mm 4.4mm; margin:4mm 0; border-radius:0 1.5mm 1.5mm 0;
+  break-inside:avoid;
+}
+.note.key{ border-left-color:var(--accent-2); background:var(--accent-2-soft); border-color:#EBC9DA; }
+.note.risk{ border-left-color:var(--crit); background:var(--crit-soft); border-color:#F0CFC9; }
+.note.good{ border-left-color:var(--ok); background:var(--ok-soft); border-color:#C9E2D3; }
+.note p:last-child{ margin-bottom:0; }
+.note ul:last-child,.note ol:last-child{ margin-bottom:0; }
+.note .lab{
+  display:block; font-family:var(--f-mono); font-size:7pt; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:1.8mm;
+}
+.note.key .lab{ color:var(--accent-2); }
+.note.risk .lab{ color:var(--crit); }
+.note.good .lab{ color:var(--ok); }
+
+/* ============================ CARD GRID ============================ */
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin:3.5mm 0 4.5mm; }
+.card{ border:.7pt solid var(--hair); border-radius:1.5mm; padding:3.2mm 3.8mm; break-inside:avoid; }
+.card .k{ font-family:var(--f-mono); font-size:6.6pt; letter-spacing:.13em; text-transform:uppercase; color:var(--accent-2); font-weight:600; margin-bottom:1.6mm; }
+.card h5{ font-family:var(--f-display); font-size:10pt; font-weight:600; margin:0 0 1.4mm; line-height:1.22; letter-spacing:-.01em; }
+.card p{ font-size:8.6pt; line-height:1.4; color:var(--muted); margin:0; }
+.card p b{ color:var(--ink); }
+
+/* ============================ STATS ============================ */
+.stats{ display:grid; grid-template-columns:repeat(5,1fr); border:1pt solid var(--hair); margin:4mm 0 5mm; break-inside:avoid; }
+.stat{ padding:3.2mm 3mm; border-right:.6pt solid var(--hair-lt); }
+.stat:last-child{ border-right:0; }
+.stat .v{ font-family:var(--f-display); font-weight:700; font-size:15pt; letter-spacing:-.03em; line-height:1; color:var(--accent); font-variant-numeric:tabular-nums; }
+.stat .l{ font-size:7.8pt; line-height:1.32; color:var(--muted); margin-top:1.8mm; }
+
+/* ============================ SPLIT ============================ */
+.split{ display:grid; grid-template-columns:1fr 1fr; gap:3.5mm; margin:4mm 0; }
+.split > div{ border:.7pt solid var(--hair); border-radius:1.5mm; padding:3.6mm 4.2mm; break-inside:avoid; }
+.split .hd{ font-family:var(--f-display); font-weight:700; font-size:10pt; margin-bottom:2.6mm; display:flex; align-items:center; gap:2.5mm; }
+.split .pct{ font-family:var(--f-mono); font-size:6.8pt; padding:.6mm 1.8mm; border-radius:1mm; font-weight:600; }
+.split .a20 .pct{ background:var(--accent-soft); color:var(--accent); }
+.split .a80 .pct{ background:var(--accent-2-soft); color:var(--accent-2); }
+.split ul{ font-size:8.6pt; line-height:1.42; padding-left:1.05em; margin:0; }
+
+/* ============================ Q&A ============================ */
+.qa{ border:.7pt solid var(--hair); border-radius:1.5mm; margin:3.5mm 0; overflow:hidden; break-inside:avoid; }
+.qa .q{
+  background:var(--tint); border-bottom:.7pt solid var(--hair);
+  font-family:var(--f-display); font-weight:600; font-size:10.2pt; line-height:1.3;
+  padding:3mm 4mm; margin:0; display:flex; gap:3mm; align-items:baseline;
+}
+.qa .q .qn{ font-family:var(--f-mono); font-size:8pt; color:var(--accent-2); flex:0 0 auto; }
+.qa .ans{ padding:3.4mm 4mm; }
+.qa .ans p{ font-size:9.4pt; line-height:1.5; margin:0 0 .5em; }
+.qa .ans p:last-child{ margin-bottom:0; }
+.qa .fu{
+  border-top:.6pt solid var(--hair-lt); background:#FAFBFD;
+  padding:2.8mm 4mm; font-size:8.6pt; line-height:1.42; color:var(--muted);
+}
+.qa .fu b{
+  display:block; font-family:var(--f-mono); font-size:6.8pt; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:1.2mm;
+}
+
+/* ============================ TIMELINE ============================ */
+.steps{ counter-reset:st; margin:3.5mm 0 4.5mm; }
+.step{ display:flex; gap:4mm; padding:2.8mm 0; border-bottom:.6pt solid var(--hair-lt); break-inside:avoid; }
+.step:last-child{ border-bottom:1pt solid var(--hair); }
+.step .when{ font-family:var(--f-mono); font-size:7.6pt; font-weight:600; color:var(--accent); flex:0 0 24mm; padding-top:.6mm; letter-spacing:.03em; }
+.step .what h5{ font-family:var(--f-display); font-size:10pt; font-weight:600; margin:0 0 1mm; letter-spacing:-.008em; }
+.step .what p{ font-size:8.8pt; line-height:1.42; color:var(--muted); margin:0; }
+.step .what p b{ color:var(--ink); }
+
+/* ============================ VERDICT ============================ */
+.final{ break-before:page; border:2pt solid var(--ink); border-radius:2mm; overflow:hidden; margin-top:0; }
+.final .bar{ background:var(--ink); color:#fff; padding:3mm 6mm; font-family:var(--f-mono); font-size:7.6pt; letter-spacing:.18em; text-transform:uppercase; }
+.final .inner{ padding:6mm; }
+.final .lt{ font-family:var(--f-display); font-weight:700; font-size:26pt; letter-spacing:-.028em; line-height:1; margin:0 0 4mm; color:var(--ok); }
+.final p{ font-size:11pt; line-height:1.5; }
+.final .because{ border-left:3pt solid var(--accent-2); padding-left:4.5mm; margin-top:5mm; }
+.final .because b{ display:block; font-family:var(--f-mono); font-size:7pt; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-2); font-weight:600; margin-bottom:1.8mm; }
+
+/* ============================ SOURCES ============================ */
+.src-list{ font-size:8.4pt; line-height:1.4; }
+.src-list li{ margin-bottom:1.6mm; }
+.src-list .tag{ font-family:var(--f-mono); font-size:6.6pt; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-right:1.5mm; }
+.src-list .url{ color:var(--muted); font-family:var(--f-mono); font-size:7pt; display:block; word-break:break-all; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ COVER -->
+<div class="cover">
+  <div class="rule-top"></div>
+  <p class="kicker">Smart India Hackathon &middot; Problem Statement Teardown &middot; Internal Team Brief</p>
+  <h1>The Pashudhan<br>Gap</h1>
+  <p class="dek">India already has a national livestock database and an AI disease-forecasting engine. Neither of them hears the farmer whose buffalo stopped eating this morning. <b>That silence is the whole problem statement.</b></p>
+
+  <div class="ps-block">
+    <div class="hdr">The Problem Statement</div>
+    <div class="inner">
+      <p class="title">Efficient systems for early detection, prevention, and management of livestock diseases and animal health issues</p>
+      <div class="ps-grid">
+        <div><b>Organization</b><span>Government of Maharashtra</span></div>
+        <div><b>Department</b><span>Maharashtra State Innovation Society (MSInS)</span></div>
+        <div><b>Category</b><span>Software</span></div>
+        <div><b>Theme</b><span>MedTech / BioTech / HealthTech</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-verdict">
+    <p class="lt">Final Verdict: GREEN LIGHT</p>
+    <p>Take this problem statement &mdash; but only if you position as the <b>surveillance, triage and response layer that sits above Bharat Pashudhan and beside NADRES</b>, never as another livestock app beside them. The full reasoning is on the last page.</p>
+  </div>
+
+  <div class="cover-foot">
+    <span>Prepared for team distribution</span>
+    <span>10 analysis factors &middot; competitor &amp; research grounded</span>
+  </div>
+</div>
+
+<!-- ============================================================ TOC -->
+<div class="toc-page">
+  <div class="shead"><span class="num">&mdash;</span><h2>What's in this document</h2></div>
+  <p style="color:var(--muted); max-width:150mm; margin-bottom:5mm;">Ten analysis factors, each answering the specific questions we set out to resolve before committing to this problem statement. Read section 1, 4 and 10 at minimum &mdash; those three decide whether we win or get dismissed in Q&amp;A.</p>
+
+  <div class="toc-list">
+    <a href="#s1"><span class="n">01</span><span class="t">Pain Points &amp; Core Understanding</span><span class="d">The exact problem, its root causes, who is affected, and today's inefficiencies</span></a>
+    <a href="#s2"><span class="n">02</span><span class="t">Feasibility of Execution</span><span class="d">Can we build it in the timeline? Stack, integrations, blockers, and the MVP</span></a>
+    <a href="#s3"><span class="n">03</span><span class="t">Impact &amp; Relevance</span><span class="d">Who benefits, real-world impact, scalability, and why evaluators care</span></a>
+    <a href="#s4"><span class="n">04</span><span class="t">Scope of Innovation</span><span class="d">Existing solutions, their limits, competitor table, and where we differentiate</span></a>
+    <a href="#s5"><span class="n">05</span><span class="t">Clarity of the Problem Statement</span><span class="d">Exact deliverables, misinterpretation traps, and how to frame our solution</span></a>
+    <a href="#s6"><span class="n">06</span><span class="t">Evaluator's Perspective</span><span class="d">How we get judged, which criteria dominate, and the red flags to avoid</span></a>
+    <a href="#s7"><span class="n">07</span><span class="t">Team Fit &amp; Execution Strategy</span><span class="d">Skill sets, ideal ratio, and a step-by-step research and ideation sequence</span></a>
+    <a href="#s8"><span class="n">08</span><span class="t">AI-Buildability Split (20/80)</span><span class="d">What AI builds fast, what needs judgment, and the live change a judge will demand</span></a>
+    <a href="#s9"><span class="n">09</span><span class="t">Data &amp; Resource Availability</span><span class="d">Real datasets and APIs, access terms, and the synthetic-data backup plan</span></a>
+    <a href="#s10"><span class="n">10</span><span class="t">Judge Q&amp;A Stress-Test</span><span class="d">Six hard questions, our weakest point, strong answers, and the follow-ups</span></a>
+  </div>
+
+  <div class="note key" style="margin-top:7mm;">
+    <span class="lab">The one sentence that must survive into every slide, script and answer</span>
+    <p style="font-size:11pt; line-height:1.45;">"<b>Bharat Pashudhan records what happened. NADRES predicts what might happen next month. We detect what is happening this week, in this village &mdash; and dispatch the response.</b>"</p>
+  </div>
+</div>
+
+<!-- ============================================================ 01 -->
+<section id="s1">
+  <div class="shead"><span class="num">01</span><h2>Pain Points &amp; Core Understanding</h2></div>
+
+  <h3><span class="q">What exact problem is being addressed?</span>A broken feedback loop, not a missing diagnosis tool</h3>
+  <p>Strip the problem statement down and it is <b>not</b> asking for an app that diagnoses cattle diseases. It is asking us to close a feedback loop that currently takes weeks and should take hours. Every stage of that loop leaks time, and the disease uses the leaked time to spread.</p>
+
+  <table>
+    <thead><tr><th style="width:16%">Loop stage</th><th style="width:38%">How it works today in rural Maharashtra</th><th class="nm" style="width:14%">Typical lag</th><th style="width:32%">What the PS wants instead</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">1. Signal</td><td>Farmer notices an animal is off feed or feverish, waits, tries a home remedy, asks a neighbour</td><td class="nm">1&ndash;4 days</td><td>Same-hour capture, initiated by the farmer</td></tr>
+      <tr><td class="tn">2. Report</td><td>Told verbally to a para-vet on his next village round; written into a paper register</td><td class="nm">1&ndash;7 days</td><td>Structured, geo-tagged, works offline</td></tr>
+      <tr><td class="tn">3. Detect</td><td>District officer notices a pattern only once deaths accumulate and rumours travel</td><td class="nm">1&ndash;3 weeks</td><td>Automated statistical cluster flag at village level</td></tr>
+      <tr><td class="tn">4. Confirm</td><td>Sample sent to a distant district or state lab; no tracking, no status back to the farmer</td><td class="nm">3&ndash;14 days</td><td>Tracked chain-of-custody with a referral workflow</td></tr>
+      <tr><td class="tn">5. Act</td><td>Ring vaccination and movement control &mdash; issued <em>after</em> the spread has happened</td><td class="nm">2&ndash;5 weeks</td><td>Pre-emptive, targeted, and verified as executed</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note key">
+    <span class="lab">The framing to memorise</span>
+    <p><b>The disease travels faster than the paperwork.</b> Each day of reporting delay converts a containable village event into a district emergency. India's 2022 Lumpy Skin Disease wave is the proof: over <b>97,000 cattle died in three months</b> (July to late September 2022), and <b>Maharashtra alone lost 34,711 head</b> across 2022&ndash;23 &mdash; the second-worst affected state after Rajasthan.</p>
+  </div>
+
+  <h3><span class="q">Why does this problem exist?</span>Six root causes, in order of how much they matter</h3>
+  <ol>
+    <li><b>The person who sees the symptom first has no channel.</b> Bharat Pashudhan &mdash; the national livestock database &mdash; is a <em>field-worker</em> application. Roughly four lakh field workers use it; farmers do not. The signal originates outside the system that needs it, so the clock only starts when a para-vet next reaches the village.</li>
+    <li><b>Reporting is punitive rather than protective.</b> Declaring a suspected outbreak can trigger movement bans, market closure, and culling. Farmers under-report for entirely rational economic reasons. Any design that ignores this incentive will collect no data in the field, no matter how good the software is.</li>
+    <li><b>The warning and the event are at different resolutions.</b> ICAR-NIVEDI's NADRES v2 forecasts disease risk at <em>district &times; month</em> granularity. Outbreaks actually propagate at <em>village &times; day</em>. That is a 30&ndash;100&times; resolution gap between the alarm and the thing it is meant to warn about.</li>
+    <li><b>Vertical data silos with no shared keys.</b> Dispensary registers, laboratory results, vaccination drives under LHDCP, milk-cooperative records, and human-health surveillance under IDSP each hold part of the picture and never join on a common animal, village or time key.</li>
+    <li><b>Connectivity and literacy constraints are the design, not a footnote.</b> Filling an English web form on 2G, standing in a cattle shed at six in the morning, is not a workflow anyone completes. Marathi voice input and genuine offline capability are the product here.</li>
+    <li><b>Veterinarian density.</b> Many blocks have a single veterinarian responsible for several thousand livestock units. The scarce resource being rationed is <b>attention</b> &mdash; which means <em>triage</em>, not diagnosis, is the function that actually needs automating.</li>
+  </ol>
+
+  <h3><span class="q">Who are the primary stakeholders affected?</span>Six user groups with genuinely different needs</h3>
+  <table>
+    <thead><tr><th style="width:24%">Stakeholder</th><th style="width:40%">Their real job-to-be-done</th><th style="width:36%">What kills adoption for them</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Farmer / pashupalak</td><td>"Is this serious? Who do I call? Will I be compensated if the animal dies?"</td><td>Any typing. Any English. Any fear that reporting triggers culling.</td></tr>
+      <tr><td class="tn">Para-vet / Gopal Mitra</td><td>Cover 8&ndash;15 villages, log the work he did, get paid, escalate without taking blame</td><td>Double data entry &mdash; being asked to fill a second app alongside his register</td></tr>
+      <tr><td class="tn">Field veterinarian</td><td>Identify the five calls that actually matter out of forty</td><td>Alert fatigue from a model that fires constantly</td></tr>
+      <tr><td class="tn">Block / District AH Officer</td><td>Know where to send vaccine doses and mobile veterinary units <em>this week</em></td><td>A dashboard that displays a problem but attaches no action to it</td></tr>
+      <tr><td class="tn">State dept. / DAHD</td><td>Evidence for planning and budget; WOAH-compliant outbreak reporting</td><td>Data that cannot be reconciled with Bharat Pashudhan records</td></tr>
+      <tr><td class="tn">Public health (IDSP)</td><td>Early warning on zoonoses before human cases start presenting at PHCs</td><td>No shared geography or timestamp to join animal and human signals</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">What are the current challenges or inefficiencies?</span>Where effort is being wasted right now</h3>
+  <ul>
+    <li><b>Duplicate manual entry.</b> The same case is written into a paper register, a WhatsApp message to the block officer, and later into a government app &mdash; three times, by three people, with no reconciliation.</li>
+    <li><b>Blanket rather than targeted response.</b> Because no one knows where the outbreak actually is, vaccine allocation defaults to uniform district-wise distribution instead of ring vaccination around confirmed clusters.</li>
+    <li><b>Laboratory referrals disappear.</b> A sample is collected and sent; nobody &mdash; least of all the farmer &mdash; can see where it is or whether a result came back. The confirmation often arrives after the response window has closed.</li>
+    <li><b>No memory in the call channel.</b> The 1962 animal-ambulance call centre handles calls one at a time; twenty calls from one village do not compose into an outbreak signal anywhere in the system.</li>
+    <li><b>Advisories are generic and late.</b> Farmers receive broadcast advice, not "this is happening in your village, here is what to do in the next 48 hours" in their own language.</li>
+    <li><b>Vaccination and treatment histories are incomplete.</b> Without a reliable per-animal history, you cannot tell an outbreak in an unvaccinated pocket from vaccine failure &mdash; two situations demanding opposite responses.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ 02 -->
+<section id="s2">
+  <div class="shead"><span class="num">02</span><h2>Feasibility of Execution</h2></div>
+
+  <h3><span class="q">Can a working prototype be built in the hackathon timeline?</span>Yes &mdash; and that is precisely the trap</h3>
+  <p><b>The software here is easy. The credibility is hard.</b> Every component we need is well-trodden: a progressive web app, a Postgres database, a map, a small classifier, a rules engine. A competent team ships the whole loop in 36&ndash;48 hours. What separates a winning build from the twenty other teams who also shipped a working app is <b>domain accuracy</b> &mdash; whether a veterinarian on the panel believes we understand the medicine and the reporting chain. Budget roughly two of five preparation days to domain research, not code.</p>
+
+  <h3><span class="q">What are the technical requirements?</span>A stack chosen for demo-survivability, not for the résumé</h3>
+  <table>
+    <thead><tr><th style="width:17%">Layer</th><th style="width:40%">Recommended choice</th><th style="width:43%">Why this one specifically</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Farmer app</td><td>React PWA, service worker, IndexedDB via Dexie or RxDB</td><td>Installs without a Play Store listing, and genuinely runs with the network off on stage</td></tr>
+      <tr><td class="tn">Offline sync</td><td>Append-only signed event log with role-precedence merge</td><td>Gives us a defensible conflict story without a CRDT rabbit hole we cannot finish</td></tr>
+      <tr><td class="tn">Voice input</td><td>AI4Bharat IndicASR, or Whisper-small fine-tuned on Marathi and Hindi</td><td>Marathi is the state language of the sponsoring government &mdash; judges will test it</td></tr>
+      <tr><td class="tn">Outbreak detection</td><td>Prospective space-time permutation scan statistic (Kulldorff) plus rule layer</td><td>Genuine epidemiological method, works on sparse data, and produces an explainable p-value</td></tr>
+      <tr><td class="tn">Image triage</td><td>MobileNetV3 or EfficientNet-lite over LSD, FMD, PPR and mange lesion classes</td><td>Runs on-device at roughly 15 MB &mdash; no cloud round-trip on a 2G connection</td></tr>
+      <tr><td class="tn">Geospatial</td><td>PostGIS, LGD village codes, Leaflet, Bhuvan/ISRO tiles</td><td>LGD codes are the canonical government geography &mdash; instant interoperability signal</td></tr>
+      <tr><td class="tn">Weather</td><td>Open-Meteo (free, keyless, historical and forecast)</td><td>No API-key failure on demo day; IMD is the production path once deployed</td></tr>
+      <tr><td class="tn">Backend</td><td>FastAPI, Postgres, Redis, Celery for alert fan-out</td><td>Boring and fast &mdash; one developer can hold the whole thing in their head</td></tr>
+      <tr><td class="tn">IVR channel</td><td>Asterisk or FreeSWITCH locally; Exotel or Twilio sandbox for a live call</td><td>The PS names IVR explicitly, and a real phone call during the demo is memorable</td></tr>
+      <tr><td class="tn">SMS fallback</td><td>Structured SMS codec that encodes the same case object in 140 characters</td><td>The genuinely differentiating detail for zero-data areas</td></tr>
+      <tr><td class="tn">Dashboard</td><td>React with a charting library, server-driven action queue</td><td>Officer console must be an action queue, not a visualisation gallery</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">What could be blockers?</span>Name these before a judge names them for us</h3>
+  <div class="note risk">
+    <span class="lab">Four real blockers, with our stated position on each</span>
+    <ol class="tight" style="margin-bottom:0;">
+      <li><b>No public real-time outbreak feed exists.</b> The <code>data.gov.in</code> livestock disease datasets are aggregate and largely cover 2005&ndash;2012. We cannot train on live outbreak data because live outbreak data is not published. <em>Position: this gap is the problem statement, and we say so.</em></li>
+      <li><b>Bharat Pashudhan has no open public API.</b> Integration is a policy decision by DAHD, not something we can engineer around. <em>Position: we key on the same 12-digit Tag ID and build an adapter layer, so integration becomes a configuration change rather than a rewrite.</em></li>
+      <li><b>Regulatory constraint on diagnosis.</b> An AI system must not present itself as diagnosing an animal; prescribing treatment is the legal preserve of a registered veterinary practitioner. <em>Position: we triage and route, a vet confirms. This is designed in, not bolted on.</em></li>
+      <li><b>The reporting disincentive.</b> Farmers have economic reasons not to report. <em>Position: this is solved socially &mdash; through compensation-claim value, anonymous syndrome reporting, and service-before-inspection &mdash; not technically.</em></li>
+    </ol>
+  </div>
+  <p>Secondary risks worth tracking: image datasets for lesions are small and biased toward severe cases; Marathi ASR accuracy drops sharply on regional dialects such as Varhadi and Ahirani; and any live telephony demo depends on network conditions in the venue, so we rehearse a fallback.</p>
+
+  <h3><span class="q">What MVP can be achieved to impress evaluators?</span>Four things that must ship, three that should, one list to cut</h3>
+  <div class="cards">
+    <div class="card"><div class="k">Must ship &mdash; P0</div><h5>Voice-first symptom report</h5><p>Marathi speech to a structured record: syndrome, species, animal count, GPS, photograph. <b>Works fully offline</b>, queues locally, syncs on reconnect.</p></div>
+    <div class="card"><div class="k">Must ship &mdash; P0</div><h5>Village-level cluster alarm</h5><p>Scan statistic fires when reports exceed the expected baseline within a space-time window, and displays <b>the p-value plus the individual reports that triggered it</b>.</p></div>
+    <div class="card"><div class="k">Must ship &mdash; P0</div><h5>Officer map and action queue</h5><p>Choropleth risk surface with cluster pins, where every alert carries a <b>prescribed action</b>: dispatch an MVU, ring-vaccinate, or collect a sample.</p></div>
+    <div class="card"><div class="k">Must ship &mdash; P0</div><h5>Referral chain-of-custody</h5><p>QR-tagged sample tracked from farm to dispensary to laboratory, with status visible to the farmer who filed the original report. <b>This closes the loop.</b></p></div>
+    <div class="card"><div class="k">Should ship &mdash; P1</div><h5>Multilingual outbound advisory</h5><p>Auto-drafted Marathi and Hindi advisory pushed to every farmer inside the containment radius, over SMS, in-app notification and IVR callback.</p></div>
+    <div class="card"><div class="k">Should ship &mdash; P1</div><h5>Animal-level health card</h5><p>Keyed on the <b>12-digit Bharat Pashudhan Tag ID</b>, holding vaccination history, treatment history and outcome &mdash; writable offline.</p></div>
+    <div class="card"><div class="k">Wow factor &mdash; P2</div><h5>One Health zoonotic bridge</h5><p>Clusters suspected of anthrax, brucellosis, rabies or avian influenza raise a parallel human-health notice on shared geography. <b>Nobody else will build this.</b></p></div>
+    <div class="card"><div class="k">Cut ruthlessly</div><h5>What we deliberately skip</h5><p>Blockchain, IoT collars, a marketplace, an insurance module, Aadhaar login, and any claim to predict all fifteen notifiable diseases.</p></div>
+  </div>
+
+  <div class="note good">
+    <span class="lab">The demo that wins the room</span>
+    <p>Ninety seconds, in this order: <b>(1)</b> phone in airplane mode, farmer speaks a symptom in Marathi, report is filed locally. <b>(2)</b> Network restored, report syncs. <b>(3)</b> On the officer console, this report tips a village over the detection threshold and a cluster alarm fires with a visible p-value. <b>(4)</b> Officer taps the alert; an MVU is dispatched and a Marathi advisory goes out to the containment radius. <b>(5)</b> A sample QR is scanned into the lab pipeline, and the original farmer's screen updates with the status. One continuous story, no slide transitions.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 03 -->
+<section id="s3">
+  <div class="shead"><span class="num">03</span><h2>Impact &amp; Relevance</h2></div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">&#8377;20,000cr</div><div class="l">ICAR estimate of annual milk and meat loss to FMD alone</div></div>
+    <div class="stat"><div class="v">535.8 M</div><div class="l">Livestock in India, 20th Census &mdash; including 192.9 M cattle</div></div>
+    <div class="stat"><div class="v">34,711</div><div class="l">Cattle Maharashtra lost to Lumpy Skin Disease, 2022&ndash;23</div></div>
+    <div class="stat"><div class="v">~36 cr</div><div class="l">Animals now carrying a 12-digit Bharat Pashudhan Tag ID</div></div>
+    <div class="stat"><div class="v">147 cr</div><div class="l">FMD vaccine doses given cumulatively under NADCP / LHDCP</div></div>
+  </div>
+
+  <h3><span class="q">Who benefits from this solution?</span>Five beneficiary groups, with the specific benefit named</h3>
+  <ul>
+    <li><b>Smallholder farmers.</b> For a household keeping two or three animals, a single preventable death removes a large share of annual income. Faster triage is direct income protection, and the case record doubles as evidence for a compensation claim.</li>
+    <li><b>Field veterinarians and para-veterinary workers.</b> Triage converts an unsorted call list into a ranked queue. Mobile veterinary unit routing stops being first-come-first-served and starts being risk-weighted.</li>
+    <li><b>State and district government.</b> Evidence-based vaccine allocation replaces uniform district-wise distribution; outbreak reporting becomes auditable and WOAH-compliant; and planning gets a real denominator instead of anecdote.</li>
+    <li><b>Public health system.</b> Roughly six in ten emerging human infectious diseases are zoonotic in origin. For anthrax, brucellosis, avian influenza and leptospirosis, the animal signal <em>precedes</em> the human one &mdash; so an animal-side early warning is a human-side early warning.</li>
+    <li><b>Dairy cooperatives and insurers.</b> Herd-level risk becomes measurable and therefore underwritable, which is a precondition for meaningful livestock insurance penetration.</li>
+  </ul>
+
+  <h3><span class="q">What real-world impact can it create?</span>Economic, social and systemic</h3>
+  <table>
+    <thead><tr><th style="width:18%">Dimension</th><th style="width:82%">Concrete effect, stated as an outcome we could measure in a pilot</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Economic</td><td>Reduced mortality and productivity loss in the pilot district; fewer wasted vaccine doses through targeted rather than blanket allocation; lower cost per contained outbreak because containment happens at village rather than district scale</td></tr>
+      <tr><td class="tn">Social</td><td>Faster access to veterinary attention for households far from a dispensary; advisories in the farmer's own language; a documented case record that strengthens compensation claims</td></tr>
+      <tr><td class="tn">Public health</td><td>Earlier zoonotic warning through the One Health bridge, giving district health authorities lead time before human cases appear</td></tr>
+      <tr><td class="tn">Institutional</td><td>Reporting time falls from days to hours; laboratory referrals become traceable; state planning moves from retrospective counts to prospective risk</td></tr>
+      <tr><td class="tn">Environmental</td><td>More targeted use of antimicrobials and vaccines, reducing both waste and unnecessary antimicrobial pressure in the livestock population</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">Is it scalable beyond a hackathon?</span>Unusually so, because the rails already exist</h3>
+  <p>This is not a proposal that requires new infrastructure to be built before it can work. <b>Bharat Pashudhan</b> already supplies the animal identity layer, with roughly 36 crore animals tagged. <b>LHDCP</b> (formerly NADCP) already runs the national vaccination programme, having delivered around 147 crore FMD doses. The <b>1962 mobile veterinary unit call centre</b> already supplies a dispatch fleet operating on a hybrid model of pre-set routes and on-demand calls. <b>NADRES v2</b> already supplies a seasonal risk prior for fifteen diseases.</p>
+  <p>Our system is the connective tissue between them. That means state rollout is an <b>integration project rather than a greenfield build</b> &mdash; a materially cheaper and faster proposition than anything a competing team can offer. We should say this explicitly in the pitch, because it converts "nice prototype" into "deployable next financial year".</p>
+
+  <h3><span class="q">Why would evaluators find this problem important?</span>Because it is their own recent failure</h3>
+  <div class="note">
+    <span class="lab">The strongest single fact about this problem statement</span>
+    <p>The sponsoring organisation is the <b>Government of Maharashtra</b> &mdash; a state that lost 34,711 cattle to Lumpy Skin Disease and faced a High Court petition seeking a proper policy response. This is not a hypothetical civic-technology exercise to the people judging it. It is a recent, expensive and politically visible failure that they were personally close to. Any solution that credibly shortens the detection-to-containment window speaks directly to that memory.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 04 -->
+<section id="s4">
+  <div class="shead"><span class="num">04</span><h2>Scope of Innovation &amp; Competitor Analysis</h2></div>
+
+  <h3><span class="q">Are there existing products in this space?</span>Yes &mdash; several, and two of them are formidable</h3>
+  <p>Knowing these systems by name is how we win this problem statement. Not knowing them is how we lose it inside the first two minutes of question time, because a government judge will assume we did no homework.</p>
+
+  <table>
+    <thead><tr><th style="width:16%">Solution</th><th style="width:28%">What it does</th><th style="width:44%">The limitation we exploit</th><th style="width:12%">Overlap</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tn">Bharat Pashudhan<br><span class="chip info">DAHD + NDDB</span></td>
+        <td>National animal-level registry under the National Digital Livestock Mission. 12-digit Tag ID, vaccination, artificial insemination, e-prescriptions, disease reports, milk recording. Around 36 crore animals; roughly 4 lakh field workers.</td>
+        <td><b>Field-worker facing and record-first.</b> Farmers cannot file anything into it. It is a system of <em>record</em>, not a system of <em>early warning</em>. There is no syndromic clustering, no outbound farmer alerting, and no laboratory chain-of-custody. Reports sit as rows; nothing computes whether they constitute an outbreak.</td>
+        <td><span class="chip crit">High</span></td>
+      </tr>
+      <tr>
+        <td class="tn">NADRES v2 / 3.0<br><span class="chip info">ICAR-NIVEDI</span></td>
+        <td>AI-enabled disease forewarning for 15 diseases at district level, published monthly, with SMS alerts to farmers and veterinarians. Won a Gold Award for AI in citizen-centric services.</td>
+        <td><b>District &times; month resolution and one-way broadcast.</b> Built on historical incidence and meteorological covariates, with no live field ingestion. It cannot tell you an outbreak has actually started in a specific village this week, and it carries no case management or response workflow.</td>
+        <td><span class="chip warn">Medium</span></td>
+      </tr>
+      <tr>
+        <td class="tn">1962 MVU call centre<br><span class="chip info">EMRI / State AHDs</span></td>
+        <td>Toll-free animal ambulance and mobile veterinary service. Hybrid operation, roughly half on pre-set village routes and half on-demand through the call centre.</td>
+        <td>Reactive and strictly per-call. <b>No epidemiological memory</b> &mdash; twenty calls from one village never compose into an outbreak signal anywhere in the system.</td>
+        <td><span class="chip ok">Low &mdash; integrate</span></td>
+      </tr>
+      <tr>
+        <td class="tn">Stellapps mooOn<br><span class="chip mag">Private</span></td>
+        <td>IoT wearables plus herd-management software; activity, rest and heat-cycle signals. Around 3 million farmers across 36,000 villages; claims a 50% reduction in cattle health expenditure.</td>
+        <td>Per-animal hardware cost, and a commercial dairy-supply-chain focus. It serves milk-pouring cooperative members &mdash; <b>not goats, sheep, poultry or backyard herds</b>, which is where a large share of outbreak risk actually sits.</td>
+        <td><span class="chip ok">Low</span></td>
+      </tr>
+      <tr>
+        <td class="tn">MoooFarm</td>
+        <td>Mobile advisory for smallholder dairy farmers: veterinarian connect, cattle registry, input commerce, credit and insurance access.</td>
+        <td>An advisory marketplace, not a surveillance system. No government workflow, no laboratory referral, no outbreak escalation path.</td>
+        <td><span class="chip ok">Low</span></td>
+      </tr>
+      <tr>
+        <td class="tn">WOAH WAHIS<br>FAO EMPRES-i</td>
+        <td>International notifiable-disease reporting and global animal-health event tracking.</td>
+        <td>Country-level, weeks late, and upward-reporting only. Of no use whatsoever to a block officer deciding what to do on Tuesday.</td>
+        <td><span class="chip ok">Low</span></td>
+      </tr>
+      <tr>
+        <td class="tn">e-Gopala /<br>Kisan Call Centre</td>
+        <td>Advisory content, breed and nutrition guidance, and a farmer helpline.</td>
+        <td>Content delivery only. There is no case object, no geospatial aggregation and no escalation.</td>
+        <td><span class="chip ok">Low</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note key">
+    <span class="lab">The gap, stated in one sentence</span>
+    <p>India has a <b>system of record</b> (Bharat Pashudhan) and a <b>system of prediction</b> (NADRES). It does not have a <b>system of detection and response</b>. Nothing today turns forty farmer-reported symptoms into a village-level statistical alarm, a dispatched mobile veterinary unit, a tracked laboratory sample, and a Marathi advisory to the two hundred households inside the containment radius. <b>That is what we build.</b></p>
+  </div>
+
+  <h3><span class="q">What new approach can be added?</span>Five innovations that are real methods, not buzzwords</h3>
+  <ol>
+    <li><b>Prospective space-time scan statistics for syndromic clustering.</b> Kulldorff's space-time permutation model is what public-health epidemiology genuinely uses for outbreak detection. It works on sparse counts, requires no population denominator, and outputs a <em>p-value and a cluster radius</em> instead of an unexplainable score. Almost no hackathon team will do this &mdash; most will train a random forest on three hundred synthetic rows and hope nobody asks how. SaTScan is the reference implementation to mirror.</li>
+    <li><b>Voice-first Marathi capture into a syndrome ontology, not free text.</b> The pipeline is speech recognition, then intent extraction, then mapping into a controlled vocabulary: fever, skin nodules, lameness, oral or hoof lesions, sudden death, abortion storm, nasal or ocular discharge. Structured syndromes are what make clustering mathematically possible; free text is what makes it impossible.</li>
+    <li><b>Confidence-gated triage that is architecturally incapable of diagnosing.</b> The output is <code>syndrome + risk band + route</code>, never a disease name presented as fact. Below a confidence floor the system does not guess &mdash; it escalates to a human faster. This is simultaneously the clinically correct design and the complete answer to the regulatory question.</li>
+    <li><b>A connectivity degradation ladder: PWA, then offline queue, then SMS codec, then IVR.</b> One case object, four transports. This is demonstrated by putting the phone into airplane mode during the pitch rather than by describing it on a slide.</li>
+    <li><b>A One Health bridge into human surveillance.</b> Zoonotic-suspect clusters emit a parallel notice on shared LGD geography, because the animal signal is the leading indicator. This is the state-of-the-art framing in global health and reads as genuinely sophisticated to a domain judge.</li>
+  </ol>
+
+  <h3><span class="q">How can the solution stand out technically?</span>Where to spend our differentiation budget</h3>
+  <table>
+    <thead><tr><th style="width:20%">Technology</th><th style="width:14%">Verdict</th><th style="width:66%">Reasoning</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Applied epidemiology (scan statistics)</td><td><span class="chip ok">Do this</span></td><td>Highest differentiation per hour of work. It is defensible, explainable, and works on the tiny data we will actually have.</td></tr>
+      <tr><td class="tn">Offline-first architecture</td><td><span class="chip ok">Do this</span></td><td>The PS names low-connectivity explicitly. It is hard to fake and instantly demonstrable.</td></tr>
+      <tr><td class="tn">Indic voice + multilingual advisories</td><td><span class="chip ok">Do this</span></td><td>Directly addresses the literacy barrier and the sponsoring state's language.</td></tr>
+      <tr><td class="tn">On-device vision for lesion triage</td><td><span class="chip ok">Do this</span></td><td>Feasible for visually distinct diseases; keep claims modest and metrics honest.</td></tr>
+      <tr><td class="tn">One Health / zoonotic linkage</td><td><span class="chip ok">Do this</span></td><td>Almost certainly unique in the competition and highly credible to a veterinary judge.</td></tr>
+      <tr><td class="tn">Blockchain</td><td><span class="chip crit">Avoid</span></td><td>No judge will accept it without an answer to "why not a signed database row", and we do not have one.</td></tr>
+      <tr><td class="tn">IoT wearables / sensors</td><td><span class="chip crit">Avoid</span></td><td>Per-animal hardware cost defeats the smallholder use case, and Stellapps already owns this ground.</td></tr>
+      <tr><td class="tn">AR / VR</td><td><span class="chip crit">Avoid</span></td><td>No connection to the problem; reads as decoration.</td></tr>
+      <tr><td class="tn">Large language model chatbot</td><td><span class="chip warn">Only if bounded</span></td><td>Acceptable strictly for advisory phrasing and translation. Never for triage decisions, and never for anything a farmer could act on unreviewed.</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Research and reference material worth actually reading</h4>
+  <ul class="tight">
+    <li><b>Avian influenza risk mapping in India using machine learning</b> &mdash; <em>Frontiers in Veterinary Science</em>. A national spatial risk map from outbreak records spanning 2006 to April 2024, using 94 environmental, livestock, land-cover and anthropogenic predictors; eight base classifiers all achieved AUC above 0.76. This is our template for a defensible risk model.</li>
+    <li><b>Multi-algorithm machine-learning ensemble for FMD risk in South Asia</b> &mdash; <em>PLOS ONE</em>, 2025. Random forest, support vector and gradient boosting over 660 FMD outbreaks from 2009 to 2022 across India, Bangladesh and Sri Lanka, using 15 predictive variables.</li>
+    <li><b>Machine learning for syndromic surveillance using veterinary necropsy reports</b> &mdash; the canonical text-to-syndrome pipeline, and the methodological justification for our syndrome ontology.</li>
+    <li><b>Zoonotic disease outbreaks reported under India's IDSP, 2018&ndash;2023</b> &mdash; cross-sectional analysis of national surveillance data; the evidence base for the One Health bridge.</li>
+    <li><b>FMD incidence in cattle and buffaloes and associated farm-level economic costs in endemic India</b> &mdash; our sourced per-animal loss figures.</li>
+    <li><b>PRS India report summary: Lumpy Skin Disease in Cattle</b> &mdash; the policy-failure narrative our pitch opens with.</li>
+    <li><b>NADRES Livestock Disease Risk Forewarning Methodology bulletins</b> &mdash; read one end to end; it tells us exactly what the incumbent forecast does and does not do.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ 05 -->
+<section id="s5">
+  <div class="shead"><span class="num">05</span><h2>Clarity of the Problem Statement</h2></div>
+
+  <h3><span class="q">What exactly is being asked?</span>The expected-solution paragraph is effectively a rubric</h3>
+  <p>This problem statement is unusually explicit. The "Expected Solution / Outcome" paragraph is a checklist, and we should treat it as the marking scheme &mdash; mapping every feature we build to a clause, and being able to point at the clause when asked.</p>
+
+  <table>
+    <thead><tr><th style="width:34%">Clause in the problem statement</th><th style="width:44%">Our corresponding deliverable</th><th style="width:22%">Demo-able in the timeline?</th></tr></thead>
+    <tbody>
+      <tr><td>Capture symptom and mortality reports from farmers and field workers</td><td>Offline voice and photo report, with separate farmer and field-worker modes</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Rule-based or AI-assisted triage to flag suspected outbreaks</td><td>YAML rule engine, image classifier, and a confidence gate that escalates rather than guesses</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Integrate geospatial risk mapping</td><td>LGD-coded choropleth with a scan-statistic cluster overlay</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Weather and historical disease trends</td><td>Open-Meteo covariates combined with a NADRES-style seasonal prior</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Animal-level or herd-level health, vaccination and treatment records</td><td>Tag-ID-keyed health card, writable offline, syncing on reconnect</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Issue multilingual advisories and alerts</td><td>Marathi, Hindi and English templated advisories over SMS, push and IVR</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Support sample collection, laboratory referral and case escalation</td><td>QR chain-of-custody with an explicit state machine and farmer-visible status</td><td><span class="chip warn">Yes, if scoped tightly</span></td></tr>
+      <tr><td>Provide dashboards for veterinary officials</td><td>Block and district action queue with owner, action and SLA per alert</td><td><span class="chip ok">Yes</span></td></tr>
+      <tr><td>Operate through mobile, web, IVR or offline-enabled channels</td><td>All four, as the connectivity degradation ladder</td><td><span class="chip warn">IVR: one live call</span></td></tr>
+    </tbody>
+  </table>
+
+  <p>The stated outcomes &mdash; reduced reporting time, earlier outbreak identification, improved vaccination coverage, faster treatment and containment, lower mortality, stronger evidence-based planning &mdash; are all <b>latency and coverage metrics</b>. That tells us what to instrument and what to put on the results slide: days-to-detection, hours-to-first-response, percentage of the containment radius reached by advisory.</p>
+
+  <h3><span class="q">Where can teams misinterpret the PS?</span>Five traps, in order of how many teams will fall into them</h3>
+  <ol>
+    <li><b>Building a diagnosis app.</b> The problem statement says <em>triage</em>, <em>flag suspected outbreaks</em>, and <em>referral</em>. It never asks anyone to diagnose. A team that promises "our AI detects twenty cattle diseases from a photograph" will be dismantled by the veterinary judge, and deservedly.</li>
+    <li><b>Building a farmer super-app.</b> Marketplace, insurance, breeding, feed advisory, weather, mandi prices. Scope creep reads to a judge as the absence of a thesis.</li>
+    <li><b>Treating offline capability as a checkbox.</b> The PS names low-connectivity operation explicitly, and judges from a state animal-husbandry department <em>will</em> ask for a disconnected demonstration. Offline is the differentiator, not the footnote.</li>
+    <li><b>Ignoring the existing government systems.</b> If we do not mention Bharat Pashudhan and NADRES unprompted, the panel concludes we did not research the domain &mdash; and everything else we say is discounted from that point on.</li>
+    <li><b>Optimising the dashboard.</b> A beautiful map that dispatches nobody is a screensaver. Every alert must carry an owner, an action and a time bound, or the dashboard is decoration.</li>
+  </ol>
+  <p>Two subtler misreadings worth flagging: the phrase "at village, block and district levels" means the system must <b>aggregate across three administrative tiers</b>, not just plot points; and "coordinated response" means multiple agencies acting on one shared case object, which is a workflow requirement rather than a reporting one.</p>
+
+  <h3><span class="q">How should the solution be framed?</span>One positioning sentence and one diagram</h3>
+  <div class="note key">
+    <span class="lab">Open with this and never lose it</span>
+    <p style="font-size:11.5pt; line-height:1.45;">"<b>Bharat Pashudhan records what happened. NADRES predicts what might happen next month. We detect what is happening this week, in this village &mdash; and dispatch the response.</b>"</p>
+  </div>
+  <p>Follow it immediately with the loop on a single slide: <b>report &rarr; cluster &rarr; dispatch &rarr; sample &rarr; confirm &rarr; advisory &rarr; verified containment</b>, drawn as one closed path. Alignment with the problem statement is proven by that loop closing, not by counting features. Then spend the remaining time in a live demonstration rather than on architecture diagrams &mdash; the architecture slide is for the appendix, to be produced only if asked.</p>
+</section>
+
+<!-- ============================================================ 06 -->
+<section id="s6">
+  <div class="shead"><span class="num">06</span><h2>Evaluator's Perspective</h2></div>
+
+  <h3><span class="q">How will an evaluator judge this PS?</span>Expect a mixed panel scoring on different axes</h3>
+  <p>For a state-government-sponsored health-tech problem statement, the panel is typically three kinds of person, and we must satisfy all three inside the same eight minutes. They are not looking for the same thing, and a pitch tuned to only one of them scores poorly overall.</p>
+
+  <table>
+    <thead><tr><th style="width:22%">Judge type</th><th style="width:38%">What they are actually testing</th><th style="width:40%">The fifteen seconds that wins them</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Veterinary / animal husbandry domain expert</td><td>Do we know the diseases, the reporting chain, and the veterinarian's legal role in it?</td><td>Correctly naming HS, BQ, PPR, FMD, LSD and brucellosis in context &mdash; and saying plainly, "the AI triages, the registered veterinarian diagnoses"</td></tr>
+      <tr><td class="tn">Government IT / NIC</td><td>Will this ever integrate with what already exists, or is it another island?</td><td>LGD village codes as our primary geography, and the 12-digit Bharat Pashudhan Tag ID as our animal key</td></tr>
+      <tr><td class="tn">Industry technologist / startup</td><td>Is the hard part real, or hand-waved behind a nice interface?</td><td>The airplane-mode demonstration, plus the scan statistic showing a visible p-value and the specific reports that triggered it</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">Which criteria matter most?</span>Weighted for this specific problem statement</h3>
+  <table>
+    <thead><tr><th style="width:32%">Criterion</th><th style="width:18%">Weight here</th><th style="width:50%">How we bank it</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Feasibility and working prototype</td><td><span class="chip crit">Very high</span></td><td>A live end-to-end run on a real device. Never a recorded video &mdash; a video reads as "it does not work".</td></tr>
+      <tr><td class="tn">Domain accuracy and credibility</td><td><span class="chip crit">Very high</span></td><td>Speak to a real veterinarian before building, and name them on the slide. This is the highest-leverage hour we will spend.</td></tr>
+      <tr><td class="tn">Impact and scalability</td><td><span class="chip warn">High</span></td><td>An integration path through existing schemes, not a user-count fantasy.</td></tr>
+      <tr><td class="tn">Uniqueness / innovation</td><td><span class="chip warn">High</span></td><td>The detection layer and the One Health bridge, both of which are genuinely uncommon.</td></tr>
+      <tr><td class="tn">Sustainability</td><td><span class="chip info">Medium</span></td><td>Show that it runs inside existing LHDCP and MVU budget lines rather than requiring a new scheme.</td></tr>
+      <tr><td class="tn">Product completeness</td><td><span class="chip info">Medium</span></td><td>The loop closes end to end. Depth on one loop beats breadth across six half-built features.</td></tr>
+      <tr><td class="tn">UI polish</td><td><span class="chip info">Medium</span></td><td>Enough to look like a real product. Do not over-invest here at the expense of the demo.</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">What are the red flags evaluators might notice?</span>Eight things that lose points instantly</h3>
+  <div class="note risk">
+    <span class="lab">Avoid every one of these</span>
+    <ul class="tight" style="margin-bottom:0;">
+      <li><b>Accuracy claims</b> such as 94% or 97% on a dataset scraped from Kaggle two days earlier, with no discussion of the train/test split.</li>
+      <li><b>A demo video instead of a live run.</b> Panels read this as a confession that the build does not work.</li>
+      <li><b>"Blockchain for vaccination records"</b> with no answer to why a signed database row would not do the same job.</li>
+      <li><b>An English-only interface</b> in a problem statement sponsored by the Government of Maharashtra.</li>
+      <li><b>No mention of Bharat Pashudhan.</b> Instant and probably unrecoverable loss of credibility with the government judge.</li>
+      <li><b>No answer to "who enters the data and why would they bother".</b> This is the question that exposes whether we thought about the field or only about the screen.</li>
+      <li><b>A map with dots and no downstream action.</b> Visualisation presented as if it were a decision.</li>
+      <li><b>Claiming zoonotic detection</b> without being able to name a single zoonosis and its animal-side presentation.</li>
+    </ul>
+  </div>
+  <p>One further warning: do not overstate what has been integrated. Saying "we integrated with Bharat Pashudhan" when there is no public API is a claim the government judge can falsify from memory, and being caught on it discredits every other claim in the pitch. The honest version &mdash; "we key on the same Tag ID and built an adapter, so integration is a configuration change when the API opens" &mdash; is both true and more impressive.</p>
+</section>
+
+<!-- ============================================================ 07 -->
+<section id="s7">
+  <div class="shead"><span class="num">07</span><h2>Team Fit &amp; Execution Strategy</h2></div>
+
+  <h3><span class="q">What skill sets are needed?</span>Six roles, with the one skill each person cannot lack</h3>
+  <table>
+    <thead><tr><th class="nm" style="width:6%">#</th><th style="width:22%">Role</th><th style="width:38%">What they own end to end</th><th style="width:34%">Non-negotiable skill</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">1</td><td class="tn">Mobile / PWA engineer</td><td>Offline-first farmer application, local queue, sync logic, voice capture UI</td><td>Service workers and IndexedDB under genuine failure conditions, not just the happy path</td></tr>
+      <tr><td class="nm">2</td><td class="tn">Backend / geospatial engineer</td><td>API, Postgres and PostGIS, LGD geography, alert fan-out, case state machine</td><td>Spatial SQL and state machines</td></tr>
+      <tr><td class="nm">3</td><td class="tn">AI / ML engineer</td><td>Scan statistic, syndrome rule engine, image triage model, ASR integration</td><td>Epidemiological statistics &mdash; not only <code>model.fit()</code></td></tr>
+      <tr><td class="nm">4</td><td class="tn">Frontend / data visualisation</td><td>Officer console, cluster map, ranked action queue, advisory composer</td><td>Information design: making system state legible at a glance</td></tr>
+      <tr><td class="nm">5</td><td class="tn">Domain researcher</td><td>Veterinarian interviews, disease rule-set, advisory copy, regulatory positioning</td><td>Willingness to cold-call a veterinary college and actually get an interview</td></tr>
+      <tr><td class="nm">6</td><td class="tn">Product / pitch lead</td><td>Narrative, demo script, question-and-answer preparation, slide craft</td><td>Can run the airplane-mode demonstration live without flinching</td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">What is the ideal team ratio?</span>Two, two, one, one &mdash; and the sixth seat matters most</h3>
+  <div class="note">
+    <span class="lab">Recommended composition</span>
+    <p><b>2 backend and infrastructure &middot; 2 frontend and mobile &middot; 1 AI/ML &middot; 1 domain research and pitch.</b></p>
+    <p style="margin-bottom:0;">The characteristic failure mode on this problem statement is a team of three machine-learning engineers and nobody who has ever spoken to a veterinarian. Role 5 is worth more than a second ML engineer, because this problem is decided on domain credibility and every judge on the panel can tell within sixty seconds whether we have it. If the team is smaller than six, merge roles 1 and 4, and keep role 5 intact.</p>
+  </div>
+
+  <h3><span class="q">Step-by-step approach before solution building</span>Research and ideation, in sequence</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="when">Days 1&ndash;2</div>
+      <div class="what"><h5>Read the incumbents until we find the seam</h5><p>Install the Bharat Pashudhan app and use it. Open NADRES v2 and read one monthly forewarning bulletin end to end. Read the PRS summary on Lumpy Skin Disease. <b>We are looking for the seam between these systems, not for inspiration.</b> Write down, in one paragraph each, exactly what each system does and does not do.</p></div>
+    </div>
+    <div class="step">
+      <div class="when">Days 2&ndash;3</div>
+      <div class="what"><h5>Talk to two humans</h5><p>One field veterinarian or veterinary-college faculty member, and one dairy farmer or para-veterinary worker. Ask exactly one question: <em>"Walk me through the last time an animal in your village got sick &mdash; hour by hour."</em> <b>That transcript becomes both our demo script and our credibility on stage.</b> Get permission to name them on a slide.</p></div>
+    </div>
+    <div class="step">
+      <div class="when">Day 3</div>
+      <div class="what"><h5>Lock the disease scope to six</h5><p>Chosen for Maharashtra relevance and visible clinical signs: <b>LSD, FMD, Haemorrhagic Septicaemia, Black Quarter, PPR and anthrax</b> &mdash; the last specifically for the zoonotic bridge. Write the rule-set as a YAML file and have the veterinary contact review it. Six diseases done credibly beats fifteen done vaguely.</p></div>
+    </div>
+    <div class="step">
+      <div class="when">Day 4</div>
+      <div class="what"><h5>Design the case object once</h5><p>A single schema covering report, animal, cluster, sample and advisory. <b>Every channel &mdash; app, SMS, IVR, web &mdash; writes the same object.</b> Get this right and the remaining build is mechanical; get it wrong and every channel becomes a separate codebase.</p></div>
+    </div>
+    <div class="step">
+      <div class="when">Day 5</div>
+      <div class="what"><h5>Build the synthetic outbreak simulator first</h5><p>Before any interface work. It is simultaneously our data source, our test harness and our demo engine, and it is the answer to the hardest data question a judge can ask. Details are in section 9.</p></div>
+    </div>
+    <div class="step">
+      <div class="when">Build phase</div>
+      <div class="what"><h5>Build offline-first, then online</h5><p>Write the local path first so that airplane mode is the default state rather than a special case retrofitted at the end. Retrofitting offline capability onto an online-first app in the last six hours does not work.</p></div>
+    </div>
+    <div class="step">
+      <div class="when">Final 6 hours</div>
+      <div class="what"><h5>Freeze features and rehearse four times</h5><p>No new features in the last six hours. Rehearse the full demonstration four times, including <b>one deliberate failure recovery</b> &mdash; kill the network mid-demo on purpose and continue &mdash; so that if it happens for real, it looks intentional.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 08 -->
+<section id="s8">
+  <div class="shead"><span class="num">08</span><h2>AI-Buildability Split (20 / 80)</h2></div>
+
+  <h3><span class="q">What can AI build fast, and what still needs us?</span>The honest division of labour</h3>
+  <div class="split">
+    <div class="a20">
+      <div class="hd">AI builds this fast <span class="pct">The 20%</span></div>
+      <ul>
+        <li>CRUD API, database schema, authentication, migrations</li>
+        <li>React and PWA scaffolding, service-worker boilerplate</li>
+        <li>Leaflet map setup, choropleth rendering, marker clustering</li>
+        <li>Internationalisation plumbing and Marathi/Hindi string files</li>
+        <li>Chart components and dashboard layout</li>
+        <li>Docker, CI configuration, seed scripts, deployment</li>
+        <li>A first-pass image classifier over a public LSD/FMD dataset</li>
+        <li>The synthetic data generator scaffolding</li>
+      </ul>
+      <p style="font-size:8.4pt; color:var(--muted); margin:2.5mm 0 0;">This is roughly 70% of the <em>keystrokes</em> and 20% of the <em>value</em>. It produces a demo. It never produces a win.</p>
+    </div>
+    <div class="a80">
+      <div class="hd">Only judgment gets this right <span class="pct">The 80%</span></div>
+      <ul>
+        <li><b>The syndrome ontology</b> &mdash; which clinical signs cluster to which suspicion, validated by a veterinarian</li>
+        <li><b>Detection thresholds</b> &mdash; what count, in what radius, over what window, constitutes an outbreak rather than noise</li>
+        <li><b>Alert-fatigue economics</b> &mdash; an officer who receives forty alerts ignores all forty</li>
+        <li><b>The reporting-disincentive problem</b> &mdash; why a farmer files anything at all</li>
+        <li><b>Offline conflict semantics</b> &mdash; two workers edit one animal offline; who wins, and can we defend the rule</li>
+        <li><b>Clinical safety gating</b> &mdash; identifying where the model must refuse to answer</li>
+        <li><b>Government interoperability</b> &mdash; LGD codes, Tag IDs, WOAH disease categories</li>
+        <li><b>The demo narrative</b> &mdash; deciding which ninety seconds we actually show</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3><span class="q">What is the risk of leaning only on AI output?</span>It fails exactly where this PS is judged</h3>
+  <div class="note risk">
+    <span class="lab">The specific failure mode to guard against</span>
+    <p>An AI-scaffolded build looks strongest precisely where this problem statement is judged weakest. It will happily generate a plausible-sounding symptom-to-disease mapping that a veterinarian recognises as wrong within ten seconds. It will produce a classifier whose reported accuracy comes from a <b>leaky train/test split over near-duplicate images</b> &mdash; a number that collapses the moment anyone asks how the split was made. And it will write confident advisory text that no clinician has reviewed, which is a genuine safety problem rather than a presentational one.</p>
+    <p style="margin-bottom:0;">The domain judge's first question is always about the <b>medicine, not the code</b>. A team that cannot explain why fever plus skin nodules plus fly season points to Lumpy Skin Disease rather than pox has already lost the room, no matter how polished the application looks. Every team member must be able to defend the rule-set, not just the person who wrote it.</p>
+  </div>
+
+  <h3><span class="q">What structural change could a judge ask for on the spot?</span>Three likely demands &mdash; and how to be able to say yes</h3>
+  <p>Judges routinely test whether a system is genuinely built or merely demonstrated, by asking for a change live. For this problem statement, expect one of these three:</p>
+  <ul class="tight">
+    <li><em>"Add Peste des Petits Ruminants for goats right now &mdash; show me."</em></li>
+    <li><em>"Change the alert aggregation unit from district to block, and re-run it."</em></li>
+    <li><em>"Turn the network off and file a report."</em></li>
+  </ul>
+  <p><b>All three can be satisfied live, if we design for them on day one:</b></p>
+  <table>
+    <thead><tr><th style="width:32%">The demand</th><th style="width:38%">The design decision that makes it possible</th><th style="width:30%">What we do on stage</th></tr></thead>
+    <tbody>
+      <tr><td>Add a new disease</td><td>Disease rule-set lives in a YAML or JSON file hot-loaded at runtime, never compiled into application code</td><td>Paste roughly twenty lines, refresh, and the new disease appears in triage</td></tr>
+      <tr><td>Change the aggregation unit</td><td>Administrative level is a parameter on the scan-statistic call, not a hardcoded column</td><td>Change one dropdown; the clusters recompute at block level</td></tr>
+      <tr><td>Work without a network</td><td>Offline path built first, so airplane mode is the default state rather than a special case</td><td>Enable airplane mode and complete a full report end to end</td></tr>
+    </tbody>
+  </table>
+  <div class="note good">
+    <span class="lab">Why this is worth planning for deliberately</span>
+    <p>The moment one of these is satisfied live, the panel's assessment of <b>everything else we claimed</b> shifts &mdash; because we have just demonstrated that the system is real rather than staged. Conversely, a team that answers "we would need to change some code for that" confirms the opposite suspicion. Build these three affordances specifically because judges reach for them.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 09 -->
+<section id="s9">
+  <div class="shead"><span class="num">09</span><h2>Data &amp; Resource Availability</h2></div>
+
+  <h3><span class="q">Is there a real, accessible dataset or API?</span>Partly &mdash; and the gaps are as informative as the sources</h3>
+  <table>
+    <thead><tr><th style="width:24%">Source</th><th style="width:28%">What it contains</th><th style="width:18%">Access terms</th><th style="width:30%">Usable in our timeline?</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">data.gov.in &mdash; Animal Husbandry sector</td><td>Species-wise incidence of livestock diseases; outbreaks, attacks and deaths</td><td><span class="chip ok">Public, free API key</span></td><td>Yes, but coverage is mostly <b>2005&ndash;2012 and aggregate</b>. Useful only as a historical prior.</td></tr>
+      <tr><td class="tn">NADRES v2 forecasts and bulletins</td><td>District-level risk for 15 diseases, published monthly as PDFs</td><td><span class="chip warn">Public web, no API</span></td><td>Yes, by parsing the bulletins. Excellent seasonal prior for the risk model.</td></tr>
+      <tr><td class="tn">Open-Meteo</td><td>Historical and forecast temperature, humidity and rainfall by latitude/longitude</td><td><span class="chip ok">Free, keyless</span></td><td><b>Yes &mdash; our safest live integration.</b> No key to expire on demo day.</td></tr>
+      <tr><td class="tn">LGD (Local Government Directory)</td><td>Canonical village, block and district codes for all of India</td><td><span class="chip ok">Public</span></td><td><b>Yes &mdash; do this.</b> It is the single clearest signal of government-systems literacy.</td></tr>
+      <tr><td class="tn">Bhuvan / ISRO</td><td>Village boundaries, base tiles, thematic layers</td><td><span class="chip warn">Public, registration</span></td><td>Partly. Keep OpenStreetMap and Leaflet as a fallback if registration stalls.</td></tr>
+      <tr><td class="tn">20th / 21st Livestock Census</td><td>Species population by district &mdash; our denominator for rates</td><td><span class="chip ok">Public</span></td><td>Yes, and essential. Without it we can only report raw counts, not rates.</td></tr>
+      <tr><td class="tn">Bharat Pashudhan</td><td>Animal-level records against roughly 36 crore Tag IDs</td><td><span class="chip crit">Closed, no public API</span></td><td><b>No.</b> Design an adapter and mock the contract; do not claim integration.</td></tr>
+      <tr><td class="tn">WOAH WAHIS / FAO EMPRES-i</td><td>Global notifiable animal-disease outbreak events</td><td><span class="chip ok">Public</span></td><td>Yes &mdash; useful for historical LSD and FMD event geography.</td></tr>
+      <tr><td class="tn">Kaggle / Roboflow lesion image sets</td><td>A few thousand LSD and FMD lesion images</td><td><span class="chip ok">Public</span></td><td>Yes, but small and biased toward severe cases. <b>Report honest metrics.</b></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="q">Is the data public, paid, or restricted &mdash; and how do we get it in time?</span></h3>
+  <p>Everything we actually need is <b>public and free</b>. Nothing on the critical path is paid. The practical constraints are of three kinds. First, <b>freshness</b>: the open incidence data is a decade old, so it can inform a seasonal prior but cannot validate a detection system. Second, <b>format</b>: NADRES publishes PDFs rather than an API, so one team-member-day goes to writing a parser. Third, <b>registration latency</b>: Bhuvan and the data.gov.in API key require sign-up, so those should be requested on day one rather than the night before, with fallbacks identified in advance.</p>
+
+  <h3><span class="q">What happens if the ideal data source is not available?</span>It is not available &mdash; and saying so is a strength</h3>
+  <div class="note key">
+    <span class="lab">The honest answer to "where is your data?"</span>
+    <p>There is <b>no public real-time livestock outbreak feed in India</b>. Stating this confidently is a strength rather than an admission, because <em>it is the problem statement</em>. The data does not exist in accessible form precisely because the reporting system this PS asks us to build does not exist yet. Delivered as one clear sentence to the panel, it reframes an apparent gap as our central thesis &mdash; and it is far more persuasive than pretending we found a dataset we did not.</p>
+  </div>
+
+  <h3><span class="q">What is a realistic backup plan?</span>A calibrated synthetic outbreak simulator, built on day one</h3>
+  <p>Rather than generating arbitrary dummy rows, we build a simulator grounded in real inputs so that its output is defensible. Five ingredients:</p>
+  <ol>
+    <li><b>Real geography.</b> Actual Maharashtra village LGD codes and centroids for one or two districts. Ahmednagar and Jalgaon are good choices &mdash; both were heavily affected during the 2022 LSD wave.</li>
+    <li><b>Real denominators.</b> Cattle population per district from the Livestock Census, so that incidence is expressed as a rate rather than a count.</li>
+    <li><b>Real weather.</b> Open-Meteo historical series for the outbreak window, feeding the same covariates our live model would use.</li>
+    <li><b>A spatial SEIR transmission model</b> with distance-decayed contact, using parameters drawn from published literature, calibrated so that its output reproduces the observed 2022 LSD spread pattern.</li>
+    <li><b>Realistic noise.</b> An under-reporting rate, a reporting-delay distribution, misclassified syndromes, and duplicate reports &mdash; because a detector that only works on clean data is not a detector.</li>
+  </ol>
+  <div class="note good">
+    <span class="lab">The claim this earns us</span>
+    <p>"Our detection layer is validated against a simulator calibrated to the actual 2022 Maharashtra Lumpy Skin Disease wave. <b>It flags the Ahmednagar cluster eleven days before the officially recorded first report.</b>"</p>
+    <p style="margin-bottom:0;">That is a dramatically stronger claim than any accuracy percentage on a scraped image set &mdash; and critically, it is <b>defensible</b>, because we can show the calibration and let a judge inspect the parameters. It also converts our worst weakness (no real data) into a demonstrated capability (detection latency measured in days).</p>
+  </div>
+</section>
+
+<!-- ============================================================ 10 -->
+<section id="s10">
+  <div class="shead"><span class="num">10</span><h2>Judge Q&amp;A Stress-Test</h2></div>
+
+  <h3><span class="q">What is the weakest part a sharp judge targets first?</span></h3>
+  <div class="note risk">
+    <span class="lab">Our single most vulnerable point</span>
+    <p><b>"Who actually files the first report &mdash; and why would they?"</b></p>
+    <p style="margin-bottom:0;">Every architecture in this space collapses on the cold-start problem. Our clustering is worthless without report volume; volume depends on farmer adoption; and adoption fights a real economic disincentive to report. This must be rehearsed by <b>all six team members</b>, not only the pitch lead, because it will be asked, and it will very likely be asked first. The full answer is Q3 below.</p>
+  </div>
+
+  <div class="qa">
+    <p class="q"><span class="qn">Q1</span>Bharat Pashudhan already does animal-level records, vaccination and disease reporting, with 36 crore animals tagged. Why does your system exist?</p>
+    <div class="ans">
+      <p>Because Bharat Pashudhan is a system of record and we are a system of detection. It is a field-worker application &mdash; the farmer who sees the first symptom cannot enter anything into it, so the clock only starts when a para-vet next visits the village. It also stores reports as individual rows; nothing in it computes whether eleven reports from four adjacent villages over six days constitute a statistically significant cluster. We do not replace it. We key on the same 12-digit Tag ID and we are built to write back to it. If DAHD opens the API tomorrow, our integration is a configuration change, because we deliberately never invented our own animal identity.</p>
+    </div>
+    <div class="fu"><b>Likely follow-up</b>"And if the API never opens?" &mdash; State adoption first. Maharashtra's animal husbandry department runs its own dispensary and MVU network; we onboard through that and reconcile to Tag IDs by scanning the ear tag at the point of care.</div>
+  </div>
+
+  <div class="qa">
+    <p class="q"><span class="qn">Q2</span>NADRES v2 is an award-winning AI forecasting system from ICAR-NIVEDI covering fifteen diseases. Isn't early warning already solved?</p>
+    <div class="ans">
+      <p>NADRES forecasts at district level, a month ahead, from historical incidence and meteorological covariates. It tells a Collector that a district is at elevated LSD risk in September, which is genuinely valuable &mdash; and we consume it as a Bayesian prior rather than competing with it. But an outbreak spreads village to village in days, and NADRES has no live field ingestion, so it cannot tell you the outbreak has actually started in Shevgaon on Tuesday. We are the likelihood term to their prior: they narrow the search space, our field reports localise the event. That composition is explicit in our design &mdash; our risk score is the prior multiplied by observed cluster significance.</p>
+    </div>
+    <div class="fu"><b>Likely follow-up</b>"How do you validate that the composition actually improves anything?" &mdash; Against our simulator we measure days-to-detection three ways: prior alone, field reports alone, and combined. The combination reduces latency because the prior lowers the alarm threshold exactly where background risk is already elevated, so fewer reports are needed to reach significance.</div>
+  </div>
+
+  <div class="qa">
+    <p class="q"><span class="qn">Q3</span>Farmers have a strong incentive <em>not</em> to report &mdash; movement bans, market closure, culling. Your entire system depends on data they do not want to give.</p>
+    <div class="ans">
+      <p>We do not solve that with software alone, and we would be lying if we claimed otherwise. There are three levers. First, we make reporting <em>pay</em>: the report generates a case ID that becomes the farmer's documentary evidence for a state compensation claim. Maharashtra already compensates for LSD deaths, but the claim needs proof, and today that proof is a paper certificate obtained after the fact. Second, we allow syndrome-level anonymous reporting &mdash; a farmer can report clinical signs without immediately binding them to a tagged animal, which is sufficient for clustering, because clustering needs counts and locations, not identities. Third, the first thing the farmer receives back is <em>service</em>, an MVU dispatch or a veterinary callback, not an inspection. The behavioural design goal is that reporting feels like calling an ambulance, not calling the police.</p>
+    </div>
+    <div class="fu"><b>Likely follow-up</b>"Doesn't anonymous reporting let malicious or mistaken reports poison your clusters?" &mdash; Yes, which is why anonymous reports raise a signal but cannot alone trigger containment. A cluster escalates to action only after para-vet or MVU verification of at least one case, and we display that two-tier confidence in the alert itself so the officer knows what they are acting on.</div>
+  </div>
+
+  <div class="qa">
+    <p class="q"><span class="qn">Q4</span>You are running AI on photographs of sick animals. What happens when it is wrong and a farmer loses a herd acting on your output?</p>
+    <div class="ans">
+      <p>Our system is architecturally incapable of telling a farmer a diagnosis, and that is a deliberate design choice rather than a disclaimer. The classifier emits a syndrome class and a confidence, and that feeds a routing decision &mdash; urgency band, who gets notified, whether a sample is requested. The farmer-facing message is always of the form: signs consistent with a notifiable condition, a veterinarian has been notified, do not move animals until examined. Below a confidence floor we do not guess &mdash; we escalate to a human faster. No treatment is ever recommended by the model, because prescribing treatment is the legal preserve of a registered veterinary practitioner. In effect the AI is deciding who looks at this and how soon, which is a triage decision, and triage systems are held to a very different and far more achievable standard than diagnostic devices.</p>
+    </div>
+    <div class="fu"><b>Likely follow-up</b>"What is your false-negative rate on that triage decision?" &mdash; We tune the threshold asymmetrically. A false positive costs a wasted veterinary visit; a false negative costs an outbreak. So we run deliberately high sensitivity, accept low precision, and report both numbers rather than a single accuracy figure.</div>
+  </div>
+
+  <div class="qa">
+    <p class="q"><span class="qn">Q5</span>You claim it works offline. Show me. And what happens when two workers edit the same animal's record with no network?</p>
+    <div class="ans">
+      <p>[Put the phone into airplane mode and file a complete report with voice and photograph.] Every write is an append-only, locally-signed event carrying a device ID and a monotonic clock, queued in IndexedDB. The application never blocks on the network, because on a 2G shed floor the network is the exception rather than the rule. On reconnect we replay events rather than final states, so both workers' observations survive. For genuinely conflicting fields we resolve by role precedence &mdash; a veterinarian's entry supersedes a para-vet's, which supersedes a farmer's &mdash; and we surface the conflict in the record rather than silently discarding one side, because in a disease investigation the disagreement is itself clinical information. For zero-data areas we degrade further: the same case object encodes into a 140-character structured SMS, and an IVR keypad flow produces an identical record.</p>
+    </div>
+    <div class="fu"><b>Likely follow-up</b>"What is the maximum offline duration you have tested?" &mdash; A seven-day queue holding several hundred events including photographs, with photo compression and an LRU eviction policy on the media cache, so a prolonged outage degrades to text-only rather than failing outright.</div>
+  </div>
+
+  <div class="qa">
+    <p class="q"><span class="qn">Q6</span>Six months after deployment, is this still running &mdash; or is it another pilot that quietly died?</p>
+    <div class="ans">
+      <p>The honest failure mode for systems like this is not technical. It is that data entry becomes unpaid extra work for a para-vet who already has a register to fill. So we designed the field worker's path to <em>replace</em> a task rather than add one: the report he files is simultaneously his visit log and his e-prescription record, which is what he currently writes twice. On funding, we are not asking for a new scheme &mdash; the LHDCP vaccination programme, the 1962 MVU call-centre contracts and the existing dispensary network are all already funded line items, and we are the coordination layer across them. And ownership sits with the district animal husbandry officer, whose own performance indicators &mdash; vaccination coverage, mortality, response time &mdash; are exactly what our dashboard reports. A system that makes its owner's numbers look better is the kind that survives.</p>
+    </div>
+    <div class="fu"><b>Likely follow-up</b>"What is your first pilot district, and why that one?" &mdash; Ahmednagar or Jalgaon: high cattle density, documented severe LSD impact in 2022, existing MVU coverage, and a veterinary college nearby for clinical validation of the rule-set.</div>
+  </div>
+</section>
+
+<!-- ============================================================ VERDICT -->
+<div class="final">
+  <div class="bar">Final Verdict</div>
+  <div class="inner">
+    <p class="lt">GREEN LIGHT</p>
+    <p>Take this problem statement &mdash; with one condition. Position ourselves as the <b>detection and response layer that sits above Bharat Pashudhan and beside NADRES</b>, never as a replacement for either. Build the offline path first, keep the disease rule-set as data rather than code, and construct the demonstration around a simulated replay of the 2022 Maharashtra Lumpy Skin Disease wave.</p>
+    <div class="because">
+      <b>The single biggest reason for this verdict</b>
+      <p style="margin:0;">The winning artifact here is <b>systems design and last-mile user experience, not an AI breakthrough</b> &mdash; which means a disciplined team can genuinely finish it inside a hackathon rather than merely gesturing at it. And the sponsoring government has a recent, expensive, politically visible failure &mdash; 34,711 cattle lost in Maharashtra alone &mdash; that this addresses directly. The one thing that could sink us, being dismissed as "Bharat Pashudhan with a nicer map", is entirely avoidable, and avoiding it costs nothing but the first sentence of the pitch.</p>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:8mm;">
+  <h4>Sources and further reading</h4>
+  <ol class="src-list">
+    <li><span class="tag">Govt</span>PIB &mdash; Livestock Sector to have Digital Footprints (Bharat Pashudhan / NDLM)<span class="url">pib.gov.in/PressReleaseIframePage.aspx?PRID=2015100</span></li>
+    <li><span class="tag">Govt</span>PIB &mdash; National Digital Livestock Mission<span class="url">pib.gov.in/PressReleasePage.aspx?PRID=2204580</span></li>
+    <li><span class="tag">Research</span>ICAR-NIVEDI &mdash; NADRES v2, AI-enabled livestock disease forewarning<span class="url">nivedi.res.in/Nadres_v2/</span></li>
+    <li><span class="tag">Research</span>NADRES &mdash; Livestock Disease Risk Forewarning Methodology bulletins<span class="url">nivedi.res.in/Nadres_v2/livestockdiseaseforecast</span></li>
+    <li><span class="tag">Policy</span>PRS India &mdash; Lumpy Skin Disease in Cattle (report summary)<span class="url">prsindia.org/policy/report-summaries/lumpy-skin-disease-in-cattle</span></li>
+    <li><span class="tag">Govt</span>DAHD &mdash; State-wise LSD deaths (Lok Sabha reply LS872)<span class="url">dahd.gov.in/sites/default/files/2024-10/LS872.pdf</span></li>
+    <li><span class="tag">Service</span>EMRI &mdash; 1962 Animal Mobile Medical Ambulance<span class="url">emri.in/1962-animal-mobile-medical-ambulance-2/</span></li>
+    <li><span class="tag">Govt</span>PIB &mdash; Mobile Veterinary Units launch<span class="url">pib.gov.in/PressReleasePage.aspx?PRID=1823690</span></li>
+    <li><span class="tag">Data</span>data.gov.in &mdash; Animal Husbandry sector datasets<span class="url">data.gov.in/sector/animal-husbandry</span></li>
+    <li><span class="tag">Data</span>data.gov.in &mdash; Incidence of Livestock Diseases in India<span class="url">data.gov.in/catalog/incidence-livestock-diseases-india</span></li>
+    <li><span class="tag">Data</span>data.gov.in &mdash; 20th Livestock Census<span class="url">data.gov.in/catalog/20th-livestock-census</span></li>
+    <li><span class="tag">Paper</span>Avian influenza risk mapping in India using machine learning &mdash; Frontiers in Veterinary Science<span class="url">frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2026.1842591/full</span></li>
+    <li><span class="tag">Paper</span>Multi-algorithm ML ensemble for FMD risk in South Asia &mdash; PLOS ONE, 2025<span class="url">doi.org/10.1371/journal.pone.0320921</span></li>
+    <li><span class="tag">Paper</span>Machine learning for syndromic surveillance using veterinary necropsy reports<span class="url">ncbi.nlm.nih.gov/pmc/articles/PMC7001958/</span></li>
+    <li><span class="tag">Paper</span>Zoonotic disease outbreaks under India's IDSP, 2018&ndash;2023<span class="url">ncbi.nlm.nih.gov/pmc/articles/PMC12148586/</span></li>
+    <li><span class="tag">Paper</span>FMD incidence and farm-level economic costs in endemic India<span class="url">pubmed.ncbi.nlm.nih.gov/33740596/</span></li>
+    <li><span class="tag">Paper</span>FMD sero-prevalence estimation in Indian bovines, 2008&ndash;2021 &mdash; Scientific Reports<span class="url">nature.com/articles/s41598-023-48459-w</span></li>
+    <li><span class="tag">Industry</span>Stellapps &mdash; end-to-end dairy digitisation and mooOn herd monitoring<span class="url">stellapps.com/about/</span></li>
+    <li><span class="tag">Industry</span>Livestock Data for Decisions &mdash; snapshot of digital tools for livestock development<span class="url">livestockdata.org/member-spotlight/snapshot-digital-tools-livestock-development</span></li>
+    <li><span class="tag">Method</span>SaTScan &mdash; space-time scan statistics reference implementation<span class="url">satscan.org</span></li>
+    <li><span class="tag">Tool</span>Open-Meteo &mdash; free keyless historical and forecast weather API<span class="url">open-meteo.com</span></li>
+  </ol>
+</div>
+
+</body>
+</html>

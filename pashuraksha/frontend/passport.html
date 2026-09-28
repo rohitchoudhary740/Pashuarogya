@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1B4C8C">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png?v=9">
+<title>पशुआरोग्य — Animal Health Passport</title>
+<link rel="stylesheet" href="/css/app.css?v=9">
+<style>
+body{background:var(--paper)}
+.pp{max-width:560px;margin:0 auto;padding:16px 14px 60px}
+.card-id{background:#fff;border:1px solid var(--hair);border-radius:18px;overflow:hidden;
+  box-shadow:0 2px 6px rgba(28,36,52,.06),0 22px 44px -22px rgba(28,36,52,.28)}
+.card-id .top{background:linear-gradient(120deg,#0B2A54,#123C74 55%,#174A8C);color:#fff;
+  padding:16px 18px;display:flex;align-items:center;gap:12px}
+.card-id .top .em{width:46px;height:46px;border-radius:50%;background:#fff;display:flex;
+  align-items:center;justify-content:center;font-size:26px;border:2px solid var(--saffron)}
+.card-id .top h1{font-family:var(--f-d);font-size:19px;margin:0;line-height:1.1}
+.card-id .top .sub{font-size:11.5px;opacity:.85}
+.tricolor{height:4px;background:linear-gradient(90deg,#F4801F 33%,#fff 33% 66%,#1B7A46 66%)}
+.idrow{display:flex;gap:16px;padding:18px;align-items:center}
+.idrow #qr{flex:0 0 132px;background:#fff;padding:6px;border:1px solid var(--hair);border-radius:10px}
+.idrow .meta b{font-family:var(--f-d);font-size:21px;display:block;line-height:1.1}
+.tag{font-family:var(--f-m);font-size:13px;letter-spacing:.06em;color:var(--navy);
+  background:var(--navy-soft);padding:4px 9px;border-radius:6px;display:inline-block;margin-top:6px}
+.permit{margin:0 18px 16px;border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+.permit.ALLOWED{background:var(--green-soft);border:1.5px solid #B9DCC7}
+.permit.BLOCKED{background:var(--red-soft);border:1.5px solid #EFC1B9}
+.permit.HOLD{background:var(--amber-soft);border:1.5px solid #ECD3A0}
+.permit .big{font-family:var(--f-d);font-size:19px;font-weight:700}
+.permit.ALLOWED .big{color:var(--green)}.permit.BLOCKED .big{color:var(--red)}.permit.HOLD .big{color:var(--amber)}
+.permit .why{font-size:12.5px;color:var(--muted)}
+.sec{padding:0 18px 14px}
+.sec h3{font-family:var(--f-d);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--navy);margin:0 0 8px;display:flex;gap:7px;align-items:center}
+.sec h3::before{content:'';width:6px;height:6px;border-radius:2px;background:var(--saffron)}
+.row{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--surface-2);font-size:13.5px}
+.row .mono{font-size:11px;color:var(--muted)}
+.wd{margin:0 18px 14px;background:#FFF4EC;border:1.5px solid #F5C9A6;border-radius:12px;padding:12px 14px}
+.wd .big{font-family:var(--f-d);font-size:17px;color:var(--saffron);font-weight:700}
+.foot{padding:12px 18px 16px;font-size:11px;color:var(--muted);border-top:1px dashed var(--hair);
+  display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.scanbox{margin:14px 0 0;background:#fff;border:1px solid var(--hair);border-radius:14px;padding:14px}
+@media print{.noprint{display:none}body{background:#fff}.card-id{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="pp">
+  <div class="card-id" id="card">
+    <div class="tricolor"></div>
+    <div class="top"><div class="em"><img src="/icons/logo-mark.png?v=9" alt="Pashu Aarogya" onerror="this.parentNode.textContent='🐄'"></div>
+      <div><h1>पशुआरोग्य पासपोर्ट · Animal Health Passport</h1>
+        <div class="sub">पशुपालन विभाग, महाराष्ट्र शासन · Bharat Pashudhan Tag ID</div></div></div>
+    <div id="body"><div class="muted" style="padding:24px">Loading…</div></div>
+  </div>
+  <div class="scanbox noprint">
+    <div style="font-family:var(--f-d);font-weight:700;font-size:14px;margin-bottom:6px">🔍 Verify another animal · दूसरा पशु जाँचें</div>
+    <div style="display:flex;gap:8px"><input id="tagIn" placeholder="IN100000000001" style="flex:1">
+      <button class="btn sm" onclick="location.search='?tag='+encodeURIComponent(document.getElementById('tagIn').value.trim())">Go</button></div>
+    <div class="muted" style="font-size:11.5px;margin-top:8px">Checkposts, markets and buyers scan the QR: the permit
+      status is computed live from the Outbreak Radar — a blocked village cannot sell its animals into a clean one.</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/js/api.js?v=9"></script>
+<script>
+const SP = { cattle:'🐄 गाय / Cattle', buffalo:'🐃 भैंस / Buffalo', goat:'🐐 बकरी / Goat',
+             sheep:'🐑 भेड़ / Sheep', poultry:'🐔 मुर्गी / Poultry' };
+(async () => {
+  const tag = new URLSearchParams(location.search).get('tag');
+  const body = document.getElementById('body');
+  if (!tag) { body.innerHTML = '<div class="muted" style="padding:24px">Scan a passport QR or enter a Tag ID below.</div>'; return; }
+  let p;
+  try { p = await API.get('/api/passport/' + encodeURIComponent(tag)); }
+  catch (e) { body.innerHTML = `<div style="padding:24px;color:var(--red)">❌ ${esc(e.message)}</div>`; return; }
+  const pm = p.permit || {};
+  const PM = { ALLOWED:['✅','आवाजाही की अनुमति · Movement ALLOWED'], BLOCKED:['⛔','आवाजाही बंद · Movement BLOCKED'],
+               HOLD:['⏸','आवाजाही रोकें · Movement on HOLD'] }[pm.status] || ['•', pm.status];
+  body.innerHTML = `
+    <div class="idrow"><div id="qr"></div>
+      <div class="meta"><b>${SP[p.species] || esc(p.species)}</b>
+        <div>${esc(p.breed || '—')} · ${p.sex === 'F' ? '♀' : '♂'} · ${Math.round(p.age_months/12*10)/10} yr</div>
+        <div class="muted" style="font-size:12.5px">${esc(p.owner || '')} · ${esc(p.village)}, ${esc(p.block)}, ${esc(p.district)}</div>
+        <span class="tag">🏷 ${esc(p.tag_id)}</span></div></div>
+    <div class="permit ${pm.status}"><span style="font-size:30px">${PM[0]}</span>
+      <div><div class="big">${PM[1]}</div>
+        <div class="why">${esc(pm.reason_hi || pm.reason_mr || '')}<br>${esc(pm.reason_en || '')}${pm.until ? ' · until ' + esc(pm.until) : ''}</div></div></div>
+    ${p.withdrawal ? `<div class="wd"><div class="big">🥛 दूध/मांस न बेचें — ${p.withdrawal.days_left} दिन</div>
+      <div style="font-size:12.5px">Milk & meat withdrawal after treatment until <b>${esc(p.withdrawal.until)}</b>
+        (${esc(p.withdrawal.treatment || '')}). Food-safety rule — residue-free milk only.</div></div>` : ''}
+    <div class="sec"><h3>💉 टीकाकरण · Vaccinations</h3>
+      ${p.vaccinations.length ? p.vaccinations.map(v => `<div class="row">
+        <span><b>${esc(v.disease_name)}</b> ${v.disease_name_hi ? '· ' + esc(v.disease_name_hi) : ''}</span>
+        <span class="mono">${esc(v.given_on)} → due ${esc(v.due_on)}</span></div>`).join('')
+        : '<div class="muted" style="font-size:13px">No vaccination on record — <b>due</b></div>'}</div>
+    <div class="sec"><h3>💊 उपचार · Treatments</h3>
+      ${p.treatments.length ? p.treatments.map(t => `<div class="row">
+        <span><b>${esc(t.diagnosis || '')}</b><br><span class="muted" style="font-size:12px">${esc(t.treatment || '')}</span></span>
+        <span class="mono">${fmtDT(t.given_at)}${t.withdrawal_days ? '<br>⏳ ' + t.withdrawal_days + 'd withdrawal' : ''}</span></div>`).join('')
+        : '<div class="muted" style="font-size:13px">No treatments recorded</div>'}</div>
+    <div class="sec"><h3>📋 रोग इतिहास · Case history</h3>
+      ${p.cases.length ? p.cases.map(c => `<div class="row"><span>#${c.id} · ${esc(c.symptoms)}</span>
+        <span class="mono">${esc(c.status)} · ${fmtDT(c.reported_at)}</span></div>`).join('')
+        : '<div class="muted" style="font-size:13px">No cases — healthy record</div>'}</div>
+    <div class="foot"><span>🔏 Verified live by पशुआरोग्य · ${fmtDT(p.verified_at)}</span>
+      <button class="btn sm outline noprint" onclick="window.print()">🖨 Print card</button></div>`;
+  new QRCode(document.getElementById('qr'), { text: location.origin + '/passport.html?tag=' + p.tag_id,
+    width: 120, height: 120, colorDark: '#123566' });
+  document.title = `पशुआरोग्य पासपोर्ट · ${p.tag_id}`;
+})();
+</script>
+</body>
+</html>

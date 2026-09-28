@@ -14,7 +14,7 @@ from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from database import Base, engine, get_db, SessionLocal
+from .database import Base, engine, get_db, SessionLocal
 from models import (Location, User, Farmer, Animal, Case, Vaccination, HealthCentre,
                     Treatment, Sample, RiskScore, Outbreak, Alert, AuditLog,
                     WeatherObservation, Claim, Task, Camp)
